@@ -38,19 +38,19 @@ updater ()
 
 verifier ()
 {
-	if [ $vrs = 'x86_64' ]; then
+	if [ "$vrs" = 'x86_64' ]; then
         	a1=linux64
         	url=$cliurl0
         	line=16
 		msg="MONEROD VERSION SET TO $a1" && alert
 	fi
-	if [ $vrs = 'armv7l' ]; then
+	if [ "$vrs" = 'armv7l' ]; then
         	a1=linuxarm7
         	url=$cliurl1
         	line=14
 		msg="MONEROD VERSION SET TO $a1" && alert
 	fi
-	if [ $vrs = 'armv8l' ]; then
+	if [ "$vrs" = 'armv8l' ]; then
         	a1=linuxarm8
         	url=$cliurl2
         	line=15
