@@ -1,13 +1,13 @@
 #!/bin/bash
 
+wallet=xmr
 dir=$(printf "%q\n" "$(pwd)")
 wd=$dir/xmr
-fp="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
 vrs=$(uname -m)
-wallet=xmr
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+fp="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
 keyname=binaryfate.asc
 keyurl=https://raw.githubusercontent.com/monero-project/monero/master/utils/gpg_keys/binaryfate.asc
 hashurl=https://www.getmonero.org/downloads/hashes.txt
