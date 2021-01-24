@@ -58,12 +58,14 @@ verifier ()
 	fi
 
         msg="DOWNLOADING SIGNING KEY AND VERIFYING SIGNING KEY" && alert
+	rm "$keyname"
         wget -O "$keyname" "$keyurl"
         if gpg --keyid-format long --with-fingerprint "$keyname" | grep -q "$fp"; then
 		msg="GOOD SIGNING KEY IMPORTING SIGNING KEY" && alert
                 gpg --import "$keyname"
 
 		msg="DOWNLOADING HASH FILES AND CHECKING THE HASH FILE" && alert
+		rm hashes.txt
                 wget -O hashes.txt "$hashurl"
                 if gpg --verify hashes.txt; then
                         hash=$(sed $line'q;d' hashes.txt | cut -f 1 -d ' ')
