@@ -108,6 +108,4 @@ checkversion () {
   fi
 }
 
-
 verifier
-
