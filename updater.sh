@@ -48,6 +48,7 @@ updater () {
   cp -r "$wd" "$wd.bk"
   rmfiles
   msg="EXTRACTING BINARY TO $wd" && print
+  mkdir "$wd"
   tar -xjvf "$a1" -C "$wd" --strip-components=1
   rm "$keyname" "$hashfile" "$a1"
 }
