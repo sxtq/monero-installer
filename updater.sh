@@ -41,19 +41,19 @@ verifier () {
   if [ "$vrs" = 'x86_64' ]; then
     a1=linux64
     url=$url0
-    line=16
+    line=$(grep -n monero-linux-x64 hashes.txt | cut -d : -f 1)
     msg="MONEROD VERSION SET TO $a1" && alert
   fi
   if [ "$vrs" = 'armv7l' ]; then
     a1=linuxarm7
     url=$url1
-    line=14
+    line=$(grep -n monero-linux-armv7 hashes.txt | cut -d : -f 1)
     msg="MONEROD VERSION SET TO $a1" && alert
   fi
   if [ "$vrs" = 'armv8l' ]; then
     a1=linuxarm8
     url=$url2
-    line=15
+    line=$(grep -n monero-linux-armv8 hashes.txt | cut -d : -f 1)
     msg="MONEROD VERSION SET TO $a1" && alert
   fi
 
