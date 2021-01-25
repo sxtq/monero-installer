@@ -1,4 +1,4 @@
-# updater
+# Monero CLI updater
 Monero CLI updater for linux. Auto detects version and copies wallet files after making a backup of the previous version with wallet files.
 
 # Install
