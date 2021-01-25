@@ -25,19 +25,65 @@ print () {
   echo -e "${color}$msg${nc}"
 }
 
+rmfiles () {
+  rm $wd/LICENSE
+  rm $wd/monero-blockchain-ancestry
+  rm $wd/monero-blockchain-depth
+  rm $wd/monero-blockchain-export
+  rm $wd/monero-blockchain-import
+  rm $wd/monero-blockchain-mark-spent-outputs
+  rm $wd/monero-blockchain-prune
+  rm $wd/monero-blockchain-prune-known-spent-data
+  rm $wd/monero-blockchain-stats
+  rm $wd/monero-blockchain-usage
+  rm $wd/monerod
+  rm $wd/monero-gen-ssl-cert
+  rm $wd/monero-gen-trusted-multisig
+  rm $wd/monero-wallet-cli
+  rm $wd/monero-wallet-rpc
+}
+
 updater () {
   msg="REMOVING OLD BACKUP AND MOVING CURRENT VERSION TO BACKUP FILE" && print
   rm -dr "$wd.bk"
-  mv "$wd" "$wd.bk"
-  mkdir "$wd"
-  cp "$wd.bk/$wallet" "$wd"
-  cp "$wd.bk/$wallet.keys" "$wd"
+  cp -r "$wd" "$wd.bk"
+  rmfiles
   msg="EXTRACTING BINARY TO $wd" && print
   tar -xjvf "$a1" -C "$wd" --strip-components=1
-  rm "$a1"
+  rm "$keyname" "$hashfile" "$a1"
 }
 
 verifier () {
+  rm "$keyname" "$hashfile" "$a1"
+  msg="DOWNLOADING SIGNING KEY AND VERIFYING SIGNING KEY" && print
+  wget -O "$keyname" "$keyurl"
+  if gpg --keyid-format long --with-fingerprint "$keyname" | grep -q "$fingerprint"; then
+    msg="GOOD SIGNING KEY IMPORTING SIGNING KEY" && print
+    gpg --import "$keyname"
+    msg="DOWNLOADING THEN CHECKING THE HASH FILE" && print
+    wget -O "$hashfile" "$hashurl"
+    if gpg --verify "$hashfile"; then
+      hash0=$(sed -n "$line"p $hashfile | cut -f 1 -d ' ')
+      msg="THE TEXT FILE HASH IS $hash0 DOWNLOADING BINARYS" && print 
+      checkversion
+      wget "$url"
+      hash1=$(shasum -a 256 $a1 | cut -f 1 -d ' ') 
+      msg="THE BINARY HASH IS $hash1 CHECKING MATCH" && print
+      if [ "$hash1" = "$hash0" ] ; then
+        msg="GOOD MATCH STARTING UPDATE" && print
+        updater
+      else
+        msg="FAILED MATCH STOPPING UPDATER" && print
+      fi
+    else
+      msg="FAILED TO VERIFY HASHES STOPPING UPDATER" && print
+    fi
+  else
+    msg="FAILED TO VERIFY SIGNING KEY STOPPING UPDATER" && print
+  fi
+}
+
+checkversion () {
   if [ "$version" = 'x86_64' ] ; then
     a1=linux64
     url=$url0
@@ -60,36 +106,8 @@ verifier () {
     msg="FAILED TO DETECT VERSION STOPPING NOW" && print
     exit 1
   fi
-  msg="DOWNLOADING SIGNING KEY AND VERIFYING SIGNING KEY" && print
-  rm "$keyname"
-  wget -O "$keyname" "$keyurl"
-  if gpg --keyid-format long --with-fingerprint "$keyname" | grep -q "$fingerprint"; then
-    msg="GOOD SIGNING KEY IMPORTING SIGNING KEY" && print
-    gpg --import "$keyname"
-    msg="DOWNLOADING THEN CHECKING THE HASH FILE" && print
-    rm "$hashfile"
-    wget -O "$hashfile" "$hashurl"
-    if gpg --verify "$hashfile"; then
-      hash0=$(sed -n "$line"p $hashfile | cut -f 1 -d ' ')
-      msg="THE TEXT FILE HASH IS $hash0 DOWNLOADING BINARYS" && print 
-      rm $a1
-      wget $url
-      hash1=$(shasum -a 256 $a1 | cut -f 1 -d ' ') 
-      msg="THE BINARY HASH IS $hash1 CHECKING MATCH" && print
-      if [ "$hash1" = "$hash0" ] ; then
-        msg="GOOD MATCH STARTING UPDATE" && print
-        rm "$hashfile" "$keyname"
-        updater
-      else
-        msg="FAILED MATCH STOPPING UPDATER" && print
-      fi
-    else
-      msg="FAILED TO VERIFY HASHES STOPPING UPDATER" && print
-    fi
-  else
-    msg="FAILED TO VERIFY SIGNING KEY STOPPING UPDATER" && print
-  fi
 }
+
 
 verifier
 
