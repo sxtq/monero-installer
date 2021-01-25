@@ -62,9 +62,9 @@ verifier () {
     msg="DOWNLOADING THEN CHECKING THE HASH FILE" && print
     wget -O "$hashfile" "$hashurl"
     if gpg --verify "$hashfile"; then
+      checkversion
       hash0=$(sed -n "$line"p $hashfile | cut -f 1 -d ' ')
       msg="THE TEXT FILE HASH IS $hash0 DOWNLOADING BINARYS" && print
-      checkversion
       rm "$a1"
       wget "$url"
       hash1=$(shasum -a 256 "$a1" | cut -f 1 -d ' ') 
