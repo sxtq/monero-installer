@@ -1,16 +1,17 @@
 #!/bin/bash
 
 wallet=xmr
-vrs=$(uname -m)
-dir=$(printf "%q\n" "$(pwd)")
-wd=$dir/xmr
+version=$(uname -m)
+directory=$(printf "%q\n" "$(pwd)")
+wd=$directory/xmr
 color='\033[1;33m'
 nc='\033[0m'
 
-fp="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
+fingerprint="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
 keyname=binaryfate.asc
 keyurl=https://raw.githubusercontent.com/monero-project/monero/master/utils/gpg_keys/binaryfate.asc
 hashurl=https://www.getmonero.org/downloads/hashes.txt
+hashfile=hashes.txt
 
 #x86_64 CLI URL
 url0=https://downloads.getmonero.org/cli/linux64
@@ -19,73 +20,69 @@ url1=https://downloads.getmonero.org/cli/linuxarm7
 #arm8 CLI URL
 url2=https://downloads.getmonero.org/cli/linuxarm8
 	
-alert () {
+print () {
   echo -e "${color}$msg${nc}"
 }
 
 updater () {
-  msg="REMOVING OLD BACKUP AND MOVING CURRENT VERSION TO BACKUP FILE" && alert
+  msg="REMOVING OLD BACKUP AND MOVING CURRENT VERSION TO BACKUP FILE" && print
   rm -dr "$wd.bk"
   mv "$wd" "$wd.bk"
   mkdir "$wd"
   cp "$wd.bk/$wallet" "$wd"
   cp "$wd.bk/$wallet.keys" "$wd"
-
-  msg="EXTRACTING BINARY TO XMR DIRECTORY" && alert
+  msg="EXTRACTING BINARY TO XMR DIRECTORY" && print
   tar -xjvf "$a1" -C "$wd" --strip-components=1
   rm "$a1"
-  exit 1
 }
 
 verifier () {
-  if [ "$vrs" = 'x86_64' ]; then
+  if [ "$version" = 'x86_64' ] ; then
     a1=linux64
     url=$url0
-    line=$(grep -n monero-linux-x64 hashes.txt | cut -d : -f 1)
-    msg="MONEROD VERSION SET TO $a1" && alert
+    line=$(grep -n monero-linux-x64 "$hashfile" | cut -d : -f 1)
+    msg="MONEROD VERSION SET TO $a1" && print
   fi
-  if [ "$vrs" = 'armv7l' ]; then
+  if [ "$version" = 'armv7l' ] ; then
     a1=linuxarm7
     url=$url1
-    line=$(grep -n monero-linux-armv7 hashes.txt | cut -d : -f 1)
-    msg="MONEROD VERSION SET TO $a1" && alert
+    line=$(grep -n monero-linux-armv7 "$hashfile" | cut -d : -f 1)
+    msg="MONEROD VERSION SET TO $a1" && print
   fi
-  if [ "$vrs" = 'armv8l' ]; then
+  if [ "$version" = 'armv8l' ] ; then
     a1=linuxarm8
     url=$url2
-    line=$(grep -n monero-linux-armv8 hashes.txt | cut -d : -f 1)
-    msg="MONEROD VERSION SET TO $a1" && alert
+    line=$(grep -n monero-linux-armv8 "$hashfile" | cut -d : -f 1)
+    msg="MONEROD VERSION SET TO $a1" && print
   fi
-
-  msg="DOWNLOADING SIGNING KEY AND VERIFYING SIGNING KEY" && alert
+  msg="DOWNLOADING SIGNING KEY AND VERIFYING SIGNING KEY" && print
   rm "$keyname"
   wget -O "$keyname" "$keyurl"
-  if gpg --keyid-format long --with-fingerprint "$keyname" | grep -q "$fp"; then
-    msg="GOOD SIGNING KEY IMPORTING SIGNING KEY" && alert
+  if gpg --keyid-format long --with-fingerprint "$keyname" | grep -q "$fingerprint"; then
+    msg="GOOD SIGNING KEY IMPORTING SIGNING KEY" && print
     gpg --import "$keyname"
-
-    msg="DOWNLOADING HASH FILES AND CHECKING THE HASH FILE" && alert
-    rm hashes.txt
-    wget -O hashes.txt "$hashurl"
-    if gpg --verify hashes.txt; then
-      hash=$(sed $line'q;d' hashes.txt | cut -f 1 -d ' ')
-      msg="THE HASH IS $hash DOWNLOADING BINARYS" && alert 
+    msg="DOWNLOADING THEN CHECKING THE HASH FILE" && print
+    rm "$hashfile"
+    wget -O "$hashfile" "$hashurl"
+    if gpg --verify "$hashfile"; then
+      hash0=$(sed $line'q;d' "$hashfile" | cut -f 1 -d ' ')
+      msg="THE TEXT FILE HASH IS $hash0 DOWNLOADING BINARYS" && print 
       rm $a1
       wget $url
-      sh=$(shasum -a 256 $a1 | cut -f 1 -d ' ') 
-      msg="THE SHASUM IS $sh CHECKING MATCH" && alert
-      if [ "$sh" = "$hash" ]; then
-        msg="GOOD MATCH STARTING UPDATE" && alert
-        rm hashes.txt "$keyname"
+      hash1=$(shasum -a 256 $a1 | cut -f 1 -d ' ') 
+      msg="THE BINARY HASH IS $hash1 CHECKING MATCH" && print
+      if [ "$hash1" = "$hash0" ] ; then
+        msg="GOOD MATCH STARTING UPDATE" && print
+        rm "$hashfile" "$keyname"
         updater
       else
-        msg="FAILED MATCH STOPPING UPDATER" && alert
+        msg="FAILED MATCH STOPPING UPDATER" && print
       fi
     else
-      msg="FAILED TO VERIFY HASHES STOPPING UPDATER" && alert
+      msg="FAILED TO VERIFY HASHES STOPPING UPDATER" && print
     fi
   else
-    msg="FAILED TO VERIFY SIGNING KEY STOPPING UPDATER" && alert
+    msg="FAILED TO VERIFY SIGNING KEY STOPPING UPDATER" && print
   fi
 }
 
