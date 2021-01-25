@@ -31,7 +31,7 @@ updater () {
   mkdir "$wd"
   cp "$wd.bk/$wallet" "$wd"
   cp "$wd.bk/$wallet.keys" "$wd"
-  msg="EXTRACTING BINARY TO XMR DIRECTORY" && print
+  msg="EXTRACTING BINARY TO $wd" && print
   tar -xjvf "$a1" -C "$wd" --strip-components=1
   rm "$a1"
 }
