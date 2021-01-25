@@ -6,6 +6,7 @@ directory=$(printf "%q\n" "$(pwd)")
 wd=$directory/xmr
 color='\033[1;33m'
 nc='\033[0m'
+line=0
 
 fingerprint="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
 keyname=binaryfate.asc
@@ -54,6 +55,10 @@ verifier () {
     url=$url2
     line=$(grep -n monero-linux-armv8 "$hashfile" | cut -d : -f 1)
     msg="MONEROD VERSION SET TO $a1" && print
+  fi
+  if [ "$line" = '0' ] ; then
+    msg="FAILED TO DETECT VERSION STOPPING NOW" && print
+    exit 1
   fi
   msg="DOWNLOADING SIGNING KEY AND VERIFYING SIGNING KEY" && print
   rm "$keyname"
