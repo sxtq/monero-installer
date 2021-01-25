@@ -25,21 +25,21 @@ print () {
 }
 
 rmfiles () {
-  rm $wd/LICENSE
-  rm $wd/monero-blockchain-ancestry
-  rm $wd/monero-blockchain-depth
-  rm $wd/monero-blockchain-export
-  rm $wd/monero-blockchain-import
-  rm $wd/monero-blockchain-mark-spent-outputs
-  rm $wd/monero-blockchain-prune
-  rm $wd/monero-blockchain-prune-known-spent-data
-  rm $wd/monero-blockchain-stats
-  rm $wd/monero-blockchain-usage
-  rm $wd/monerod
-  rm $wd/monero-gen-ssl-cert
-  rm $wd/monero-gen-trusted-multisig
-  rm $wd/monero-wallet-cli
-  rm $wd/monero-wallet-rpc
+  rm "$wd/LICENSE"
+  rm "$wd/monero-blockchain-ancestry"
+  rm "$wd/monero-blockchain-depth"
+  rm "$wd/monero-blockchain-export"
+  rm "$wd/monero-blockchain-import"
+  rm "$wd/monero-blockchain-mark-spent-outputs"
+  rm "$wd/monero-blockchain-prune"
+  rm "$wd/monero-blockchain-prune-known-spent-data"
+  rm "$wd/monero-blockchain-stats"
+  rm "$wd/monero-blockchain-usage"
+  rm "$wd/monerod"
+  rm "$wd/monero-gen-ssl-cert"
+  rm "$wd/monero-gen-trusted-multisig"
+  rm "$wd/monero-wallet-cli"
+  rm "$wd/monero-wallet-rpc"
 }
 
 updater () {
@@ -63,11 +63,11 @@ verifier () {
     wget -O "$hashfile" "$hashurl"
     if gpg --verify "$hashfile"; then
       hash0=$(sed -n "$line"p $hashfile | cut -f 1 -d ' ')
-      msg="THE TEXT FILE HASH IS $hash0 DOWNLOADING BINARYS" && print 
+      msg="THE TEXT FILE HASH IS $hash0 DOWNLOADING BINARYS" && print
       checkversion
       rm "$a1"
       wget "$url"
-      hash1=$(shasum -a 256 $a1 | cut -f 1 -d ' ') 
+      hash1=$(shasum -a 256 "$a1" | cut -f 1 -d ' ') 
       msg="THE BINARY HASH IS $hash1 CHECKING MATCH" && print
       if [ "$hash1" = "$hash0" ] ; then
         msg="GOOD MATCH STARTING UPDATE" && print
