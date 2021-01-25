@@ -12,9 +12,9 @@ keyname=binaryfate.asc
 keyurl=https://raw.githubusercontent.com/monero-project/monero/master/utils/gpg_keys/binaryfate.asc
 hashurl=https://www.getmonero.org/downloads/hashes.txt
 	
-cliurl0=https://downloads.getmonero.org/cli/linux64
-cliurl1=https://downloads.getmonero.org/cli/linuxarm7
-cliurl2=https://downloads.getmonero.org/cli/linuxarm8
+url0=https://downloads.getmonero.org/cli/linux64
+url1=https://downloads.getmonero.org/cli/linuxarm7
+url2=https://downloads.getmonero.org/cli/linuxarm8
 	
 alert () {
   echo -e "${YELLOW}$msg${NC}"
@@ -37,19 +37,19 @@ updater () {
 verifier () {
   if [ "$vrs" = 'x86_64' ]; then
     a1=linux64
-    url=$cliurl0
+    url=$url0
     line=16
     msg="MONEROD VERSION SET TO $a1" && alert
   fi
   if [ "$vrs" = 'armv7l' ]; then
     a1=linuxarm7
-    url=$cliurl1
+    url=$url1
     line=14
     msg="MONEROD VERSION SET TO $a1" && alert
   fi
   if [ "$vrs" = 'armv8l' ]; then
     a1=linuxarm8
-    url=$cliurl2
+    url=$url2
     line=15
     msg="MONEROD VERSION SET TO $a1" && alert
   fi
