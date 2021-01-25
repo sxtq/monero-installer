@@ -1,6 +1,5 @@
 #!/bin/bash
 
-wallet=xmr
 version=$(uname -m)
 directory=$(printf "%q\n" "$(pwd)")
 wd=$directory/xmr
