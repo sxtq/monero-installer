@@ -65,7 +65,7 @@ verifier () {
     rm "$hashfile"
     wget -O "$hashfile" "$hashurl"
     if gpg --verify "$hashfile"; then
-      hash0=$(sed $line'q;d' "$hashfile" | cut -f 1 -d ' ')
+      hash0=$(sed $line'q;d' $hashfile | cut -f 1 -d ' ')
       msg="THE TEXT FILE HASH IS $hash0 DOWNLOADING BINARYS" && print 
       rm $a1
       wget $url
