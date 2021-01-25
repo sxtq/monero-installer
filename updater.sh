@@ -53,7 +53,7 @@ updater () {
 }
 
 verifier () {
-  rm "$keyname" "$hashfile" "$a1"
+  rm "$keyname" "$hashfile"
   msg="DOWNLOADING SIGNING KEY AND VERIFYING SIGNING KEY" && print
   wget -O "$keyname" "$keyurl"
   if gpg --keyid-format long --with-fingerprint "$keyname" | grep -q "$fingerprint"; then
@@ -65,6 +65,7 @@ verifier () {
       hash0=$(sed -n "$line"p $hashfile | cut -f 1 -d ' ')
       msg="THE TEXT FILE HASH IS $hash0 DOWNLOADING BINARYS" && print 
       checkversion
+      rm "$a1"
       wget "$url"
       hash1=$(shasum -a 256 $a1 | cut -f 1 -d ' ') 
       msg="THE BINARY HASH IS $hash1 CHECKING MATCH" && print
