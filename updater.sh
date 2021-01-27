@@ -87,19 +87,19 @@ verifier () {
 checkversion () {
   if [ "$version" = 'x86_64' ] ; then
     a1=linux64
-    url=$url0
+    url="$url0"
     line=$(grep -n monero-linux-x64 "$hashfile" | cut -d : -f 1)
     msg="MONEROD VERSION SET TO $a1" && print
   fi
   if [ "$version" = 'armv7l' ] ; then
     a1=linuxarm7
-    url=$url1
+    url="$url1"
     line=$(grep -n monero-linux-armv7 "$hashfile" | cut -d : -f 1)
     msg="MONEROD VERSION SET TO $a1" && print
   fi
   if [ "$version" = 'armv8l' ] ; then
     a1=linuxarm8
-    url=$url2
+    url="$url2"
     line=$(grep -n monero-linux-armv8 "$hashfile" | cut -d : -f 1)
     msg="MONEROD VERSION SET TO $a1" && print
   fi
