@@ -5,6 +5,8 @@ This script will make a new directory next to the xmr directory called xmr.bk th
 ## Install
 Just put the updater.sh script where you want the xmr directory that contains the monero wallet software and the wallet files then type.
 ```
+$ git clone https://github.com/882wZS6Ps7/Monero-CLI-bash-updater.git
+$ mv Monero-CLI-bash-updater/updater.sh updater.sh
 $ chmod +x updater.sh
 $ ./updater.sh
 ```
