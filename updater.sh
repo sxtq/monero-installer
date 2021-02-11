@@ -119,7 +119,7 @@ checkversion () {
 #This will check for an update by looking at the github release page for the latest version
 checkupdate () {
   current=$("$wd"/monerod --version | sed 's/.*v\(.*\)-.*/\1/')
-  latest=$(curl https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
+  latest=$(curl -s https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
   if [ "$current" = "$latest" ] ; then
     msg="No update avalible latest version: $latest Current version: $current" && print
     read -r -p 'Would you like to update anyways? [N/y]: ' output
@@ -143,7 +143,7 @@ checkupdate () {
 
 if [ "$cfu" = "1" ] ; then
   cvrs=1.3.1
-  lvrs=$(curl https://github.com/882wZS6Ps7/Monero-CLI-bash-updater/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
+  lvrs=$(curl -s https://github.com/882wZS6Ps7/Monero-CLI-bash-updater/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
   if [ "$lvrs" = "$cvrs" ] ; then
     msg="This script is up to date current version is: $cvrs" && print
   else
