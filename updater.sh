@@ -110,4 +110,28 @@ checkversion () {
   fi
 }
 
-verifier
+checkupdate () {
+  current=$("$wd"/monerod --version | sed 's/.*v\(.*\)-.*/\1/')
+  latest=$(curl https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
+  if [ "$current" = "$latest" ] ; then
+    msg="No update avalible latest version is $latest current version is $current" && print
+    read -p 'Would you like to update anyways? [N/y]: ' output
+    if [ "$output" = 'y' ] || [ "$output" = 'Y' ]; then
+      msg="Starting updater" && print
+      verifier
+    else
+      return 0
+    fi
+  else
+    msg="Update avalible latest version is $latest current version is $current" && print
+    read -p 'Would you like to update? [Y/n]: ' output
+    if [ "$output" = 'n' ] || [ "$output" = 'N' ]; then
+      return 0
+    else
+      msg="Starting updater" && print
+      verifier    
+    fi
+  fi
+}
+
+checkupdate
