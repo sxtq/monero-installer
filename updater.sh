@@ -16,13 +16,15 @@ url0=https://downloads.getmonero.org/cli/linux64
 url1=https://downloads.getmonero.org/cli/linuxarm7
 #arm8 CLI URL
 url2=https://downloads.getmonero.org/cli/linuxarm8
-	
+
+#Used for printing text on the screen
 print () {
   color='\033[1;33m'
   nc='\033[0m'
   echo -e "${color}$msg${nc}"
 }
 
+#This will remove all filles here from the xmr directory and replace them with updated versions
 rmfiles () {
   rm "$wd/LICENSE"
   rm "$wd/monero-blockchain-ancestry"
@@ -42,6 +44,7 @@ rmfiles () {
   #rm "$wd/monero-wallet-cli.log"
 }
 
+#This makes the backup and removes old files then extracts the verifed binary to the xmr directory
 updater () {
   msg="Removing old backup and moving current version to backup file" && print
   rm -dr "$wd.bk"
@@ -53,6 +56,7 @@ updater () {
   rm "$keyname" "$hashfile" "$a1"
 }
 
+#This verifies the binary, signing key and hash file
 verifier () {
   rm "$keyname" "$hashfile"
   msg="Downloading signing key and verifying signing key" && print
@@ -65,7 +69,7 @@ verifier () {
     if gpg --verify "$hashfile"; then
       checkversion
       hash0=$(sed -n "$line"p "$hashfile" | cut -f 1 -d ' ')
-      msg="The text file hash is $hash0 downloading binary's" && print
+      msg="The text file hash is $hash0 downloading binary" && print
       rm "$a1"
       wget "$url"
       hash1=$(shasum -a 256 "$a1" | cut -f 1 -d ' ') 
@@ -84,6 +88,7 @@ verifier () {
   fi
 }
 
+#This is checks what version the verifier needs to download and  what line is needed in the hash file
 checkversion () {
   line=0
   if [ "$version" = 'x86_64' ] ; then
@@ -110,6 +115,7 @@ checkversion () {
   fi
 }
 
+#This will check for an update by looking at the github release page for the latest version
 checkupdate () {
   current=$("$wd"/monerod --version | sed 's/.*v\(.*\)-.*/\1/')
   latest=$(curl https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
