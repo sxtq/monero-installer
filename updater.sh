@@ -44,11 +44,11 @@ rmfiles () {
 }
 
 updater () {
-  msg="REMOVING OLD BACKUP AND MOVING CURRENT VERSION TO BACKUP FILE" && print
+  msg="Removing old backup and moving current version to backup file" && print
   rm -dr "$wd.bk"
   cp -r "$wd" "$wd.bk"
   rmfiles
-  msg="EXTRACTING BINARY TO $wd" && print
+  msg="Extracting binary to $wd" && print
   mkdir "$wd"
   tar -xjvf "$a1" -C "$wd" --strip-components=1
   rm "$keyname" "$hashfile" "$a1"
@@ -56,32 +56,32 @@ updater () {
 
 verifier () {
   rm "$keyname" "$hashfile"
-  msg="DOWNLOADING SIGNING KEY AND VERIFYING SIGNING KEY" && print
+  msg="Downloading signing key and verifying signing key" && print
   wget -O "$keyname" "$keyurl"
   if gpg --keyid-format long --with-fingerprint "$keyname" | grep -q "$fingerprint"; then
-    msg="GOOD SIGNING KEY IMPORTING SIGNING KEY" && print
+    msg="Good signing key importing signing key" && print
     gpg --import "$keyname"
-    msg="DOWNLOADING THEN CHECKING THE HASH FILE" && print
+    msg="Downloading then checking the hash file" && print
     wget -O "$hashfile" "$hashurl"
     if gpg --verify "$hashfile"; then
       checkversion
       hash0=$(sed -n "$line"p "$hashfile" | cut -f 1 -d ' ')
-      msg="THE TEXT FILE HASH IS $hash0 DOWNLOADING BINARYS" && print
+      msg="The text file hash is $hash0 downloading binary's" && print
       rm "$a1"
       wget "$url"
       hash1=$(shasum -a 256 "$a1" | cut -f 1 -d ' ') 
-      msg="THE BINARY HASH IS $hash1 CHECKING MATCH" && print
+      msg="The binary hash is $hash1 checking match" && print
       if [ "$hash1" = "$hash0" ] ; then
-        msg="GOOD MATCH STARTING UPDATE" && print
+        msg="Good match starting update" && print
         updater
       else
-        msg="FAILED MATCH STOPPING UPDATER" && print
+        msg="Failed match stopping updater" && print
       fi
     else
-      msg="FAILED TO VERIFY HASHES STOPPING UPDATER" && print
+      msg="Failed to verify hashes stopping updater" && print
     fi
   else
-    msg="FAILED TO VERIFY SIGNING KEY STOPPING UPDATER" && print
+    msg="Failed to verify signing key stopping updater" && print
   fi
 }
 
@@ -90,22 +90,22 @@ checkversion () {
     a1=linux64
     url="$url0"
     line=$(grep -n monero-linux-x64 "$hashfile" | cut -d : -f 1)
-    msg="MONEROD VERSION SET TO $a1" && print
+    msg="Monerod version set to $a1" && print
   fi
   if [ "$version" = 'armv7l' ] ; then
     a1=linuxarm7
     url="$url1"
     line=$(grep -n monero-linux-armv7 "$hashfile" | cut -d : -f 1)
-    msg="MONEROD VERSION SET TO $a1" && print
+    msg="Monerod version set to $a1" && print
   fi
   if [ "$version" = 'armv8l' ] ; then
     a1=linuxarm8
     url="$url2"
     line=$(grep -n monero-linux-armv8 "$hashfile" | cut -d : -f 1)
-    msg="MONEROD VERSION SET TO $a1" && print
+    msg="Monerod version set to $a1" && print
   fi
   if [ "$line" = '0' ] ; then
-    msg="FAILED TO DETECT VERSION STOPPING NOW" && print
+    msg="Failed to detect version stopping now" && print
     exit 1
   fi
 }
