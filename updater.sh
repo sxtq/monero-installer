@@ -121,7 +121,7 @@ checkupdate () {
   current=$("$wd"/monerod --version | sed 's/.*v\(.*\)-.*/\1/')
   latest=$(curl https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
   if [ "$current" = "$latest" ] ; then
-    msg="No update avalible latest version is $latest current version is $current" && print
+    msg="No update avalible latest version: $latest Current version: $current" && print
     read -r -p 'Would you like to update anyways? [N/y]: ' output
     if [ "$output" = 'y' ] || [ "$output" = 'Y' ]; then
       msg="Starting updater" && print
@@ -130,7 +130,7 @@ checkupdate () {
       return 0
     fi
   else
-    msg="Update avalible latest version is $latest current version is $current" && print
+    msg="Update avalible latest version: $latest Current version: $current" && print
     read -r -p 'Would you like to update? [Y/n]: ' output
     if [ "$output" = 'n' ] || [ "$output" = 'N' ]; then
       return 0
@@ -147,7 +147,7 @@ if [ "$cfu" = "1" ] ; then
   if [ "$lvrs" = "$cvrs" ] ; then
     msg="This script is up to date current version is: $cvrs" && print
   else
-    msg="This script is outdated current version: $cvrs Latest version: $lvrs" && print
+    msg="This script is outdated latest version: $lvrs Current version: $cvrs" && print
   fi
 fi
 
