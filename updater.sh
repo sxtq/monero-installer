@@ -24,7 +24,7 @@ print () {
   echo -e "${color}$msg${nc}"
 }
 
-#This will remove all filles here from the xmr directory and replace them with updated versions
+#This will remove all files here from the xmr directory and replace them with updated versions
 rmfiles () {
   rm "$wd/LICENSE"
   rm "$wd/monero-blockchain-ancestry"
