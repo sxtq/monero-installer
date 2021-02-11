@@ -21,4 +21,6 @@ Now you can run the script
 ```
 $ ./updater.sh
 ```
+This script can also be placed inside the xmr directory with the wallet files and monero software files. This way you can have all of the monero files in one directory, it works both ways so its up to you if you want it inside or outside the xmr directory.
+
 When first downloading this script it is recommended you verify the variables haven't been modified match the urls and fingerprint with the urls on the official Monero website https://web.getmonero.org/resources/user-guides/verification-allos-advanced.html
