@@ -3,9 +3,6 @@
 version=$(uname -m)
 directory=$(printf "%q\n" "$(pwd)")
 wd=$directory/xmr
-color='\033[1;33m'
-nc='\033[0m'
-line=0
 
 fingerprint="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
 keyname=binaryfate.asc
@@ -21,6 +18,8 @@ url1=https://downloads.getmonero.org/cli/linuxarm7
 url2=https://downloads.getmonero.org/cli/linuxarm8
 	
 print () {
+  color='\033[1;33m'
+  nc='\033[0m'
   echo -e "${color}$msg${nc}"
 }
 
@@ -86,6 +85,7 @@ verifier () {
 }
 
 checkversion () {
+  line=0
   if [ "$version" = 'x86_64' ] ; then
     a1=linux64
     url="$url0"
