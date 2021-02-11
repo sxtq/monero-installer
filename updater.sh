@@ -3,6 +3,7 @@
 version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/xmr//g')
 wd=$directory/xmr #To set manually use this example wd=/home/myUser/xmr
+cfu=1 #Change this number to 0 to avoid checking for a script update
 
 fingerprint="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
 keyname=binaryfate.asc
@@ -139,5 +140,15 @@ checkupdate () {
     fi
   fi
 }
+
+if [ "$cfu" = "1" ] ; then
+  cvrs=1.3.1
+  lvrs=$(curl https://github.com/882wZS6Ps7/Monero-CLI-bash-updater/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
+  if [ "$lvrs" = "$cvrs" ] ; then
+    msg="This script is up to date current version is: $cvrs" && print
+  else
+    msg="This script is outdated current version: $cvrs Latest version: $lvrs" && print
+  fi
+fi
 
 checkupdate
