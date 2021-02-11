@@ -40,6 +40,7 @@ rmfiles () {
   rm "$wd/monero-gen-trusted-multisig"
   rm "$wd/monero-wallet-cli"
   rm "$wd/monero-wallet-rpc"
+  #rm "$wd/monero-wallet-cli.log"
 }
 
 updater () {
