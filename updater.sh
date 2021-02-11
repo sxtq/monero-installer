@@ -121,7 +121,7 @@ checkupdate () {
   latest=$(curl https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
   if [ "$current" = "$latest" ] ; then
     msg="No update avalible latest version is $latest current version is $current" && print
-    read -p 'Would you like to update anyways? [N/y]: ' output
+    read -r -p 'Would you like to update anyways? [N/y]: ' output
     if [ "$output" = 'y' ] || [ "$output" = 'Y' ]; then
       msg="Starting updater" && print
       verifier
@@ -130,7 +130,7 @@ checkupdate () {
     fi
   else
     msg="Update avalible latest version is $latest current version is $current" && print
-    read -p 'Would you like to update? [Y/n]: ' output
+    read -r -p 'Would you like to update? [Y/n]: ' output
     if [ "$output" = 'n' ] || [ "$output" = 'N' ]; then
       return 0
     else
