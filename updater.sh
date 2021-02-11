@@ -1,7 +1,7 @@
 #!/bin/bash
 
 version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect
-directory=$(printf "%q\n" "$(pwd)")
+directory=$(printf "%q\n" "$(pwd)" | sed 's/\/xmr//g')
 wd=$directory/xmr #To set manually use this example wd=/home/myUser/xmr
 
 fingerprint="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
