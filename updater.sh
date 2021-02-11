@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect 
+version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect
 directory=$(printf "%q\n" "$(pwd)")
 wd=$directory/xmr #To set manually use this example wd=/home/myUser/xmr
 
@@ -72,7 +72,7 @@ verifier () {
       msg="The text file hash is $hash0 downloading binary" && print
       rm "$a1"
       wget "$url"
-      hash1=$(shasum -a 256 "$a1" | cut -f 1 -d ' ') 
+      hash1=$(shasum -a 256 "$a1" | cut -f 1 -d ' ')
       msg="The binary hash is $hash1 checking match" && print
       if [ "$hash1" = "$hash0" ] ; then
         msg="Good match starting update" && print
@@ -135,7 +135,7 @@ checkupdate () {
       return 0
     else
       msg="Starting updater" && print
-      verifier    
+      verifier
     fi
   fi
 }
