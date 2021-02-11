@@ -1,8 +1,8 @@
 #!/bin/bash
 
-version=$(uname -m)
+version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect 
 directory=$(printf "%q\n" "$(pwd)")
-wd=$directory/xmr
+wd=$directory/xmr #To set manually use this example wd=/home/myUser/xmr
 
 fingerprint="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
 keyname=binaryfate.asc
@@ -91,19 +91,19 @@ verifier () {
 #This is checks what version the verifier needs to download and  what line is needed in the hash file
 checkversion () {
   line=0
-  if [ "$version" = 'x86_64' ] ; then
+  if [ "$version" = 'x86_64' ] || [ "$version" = '1' ]; then
     a1=linux64
     url="$url0"
     line=$(grep -n monero-linux-x64 "$hashfile" | cut -d : -f 1)
     msg="Monerod version set to $a1" && print
   fi
-  if [ "$version" = 'armv7l' ] ; then
+  if [ "$version" = 'armv7l' ] || [ "$version" = '2' ] ; then
     a1=linuxarm7
     url="$url1"
     line=$(grep -n monero-linux-armv7 "$hashfile" | cut -d : -f 1)
     msg="Monerod version set to $a1" && print
   fi
-  if [ "$version" = 'armv8l' ] ; then
+  if [ "$version" = 'armv8l' ] || [ "$version" = '3' ] ; then
     a1=linuxarm8
     url="$url2"
     line=$(grep -n monero-linux-armv8 "$hashfile" | cut -d : -f 1)
