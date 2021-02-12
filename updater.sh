@@ -142,7 +142,7 @@ checkupdate () {
 }
 
 if [ "$cfu" = "1" ] ; then
-  cvrs=1.3.1
+  cvrs=1.3.2
   lvrs=$(curl -s https://github.com/882wZS6Ps7/Monero-CLI-bash-updater/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
   if [ "$lvrs" = "$cvrs" ] ; then
     msg="This script is up to date current version is: $cvrs" && print
