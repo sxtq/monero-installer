@@ -4,7 +4,7 @@ version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/xmr//g')
 wd=$directory/xmr #To set manually use this example wd=/home/myUser/xmr
 checker0=1 #Change this number to 0 to avoid checking for a script update
-checker1=1 #Change this number to 0 to turn of update checker
+checker1=1 #Change this number to 0 to avoid checking for a monero update
 
 fingerprint="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
 keyname=binaryfate.asc
