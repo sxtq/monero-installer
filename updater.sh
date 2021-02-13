@@ -4,6 +4,7 @@ version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/xmr//g')
 wd=$directory/xmr #To set manually use this example wd=/home/myUser/xmr
 cfu=1 #Change this number to 0 to avoid checking for a script update
+checker=1 #Change this number to 0 to turn of update checker
 
 fingerprint="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
 keyname=binaryfate.asc
@@ -118,6 +119,20 @@ checkversion () {
 
 #This will check for an update by looking at the github release page for the latest version
 checkupdate () {
+  #Checks for updates to this script, this can be turned off above.
+  if [ "$cfu" = "1" ] ; then
+    cvrs=1.3.3
+    lvrs=$(curl -s https://github.com/882wZS6Ps7/Monero-CLI-bash-updater/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
+    if [ "$lvrs" = "$cvrs" ] ; then
+      msg="This script is up to date current version is: $cvrs" && print
+    else
+      msg="This script is outdated latest version: $lvrs Current version: $cvrs" && print
+    fi
+  fi
+  if [ "$checker" = "0" ] ; then
+    verifier
+    exit
+  fi
   current=$("$wd"/monerod --version | sed 's/.*v\(.*\)-.*/\1/')
   latest=$(curl -s https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
   if [ -f "$wd/monerod" ] ; then
@@ -146,16 +161,5 @@ checkupdate () {
     fi
   fi
 }
-
-#Checks for updates to this script, this can be turned off above.
-if [ "$cfu" = "1" ] ; then
-  cvrs=1.3.3
-  lvrs=$(curl -s https://github.com/882wZS6Ps7/Monero-CLI-bash-updater/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
-  if [ "$lvrs" = "$cvrs" ] ; then
-    msg="This script is up to date current version is: $cvrs" && print
-  else
-    msg="This script is outdated latest version: $lvrs Current version: $cvrs" && print
-  fi
-fi
 
 checkupdate
