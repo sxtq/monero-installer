@@ -4,6 +4,7 @@ dirname="xmr" #Name of directory that contains monero software files (make it wh
 version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$dirname'//g')
 wd="$directory"/"$dirname" #To set manually use this example wd=/home/myUser/xmr
+tmpdir=/tmp
 
 checker0=1 #Change this number to 0 to avoid checking for a script update
 checker1=1 #Change this number to 0 to avoid checking for a monero update (Just download and install)
@@ -37,27 +38,27 @@ updater () {
   fi
   msg="Extracting binary to $wd" && print
   mkdir "$wd"
-  tar -xjvf "$a1" -C "$wd" --strip-components=1
-  rm "$keyname" "$hashfile" "$a1"
+  tar -xjvf "$tmpdir/$a1" -C "$wd" --strip-components=1
+  rm "$tmpdir/$keyname" "$tmpdir/$hashfile" "$tmpdir/$a1"
 }
 
 #This verifies the binary, signing key and hash file
 verifier () {
-  rm "$keyname" "$hashfile"
+  rm "$tmpdir/$keyname" "$tmpdir/$hashfile"
   msg="Downloading signing key and verifying signing key" && print
-  wget -O "$keyname" "$keyurl"
-  if gpg --keyid-format long --with-fingerprint "$keyname" | grep -q "$fingerprint"; then
+  wget -O "$tmpdir/$keyname" "$keyurl"
+  if gpg --keyid-format long --with-fingerprint "$tmpdir/$keyname" | grep -q "$fingerprint"; then
     msg="Good signing key importing signing key" && print
-    gpg --import "$keyname"
+    gpg --import "$tmpdir/$keyname"
     msg="Downloading then checking the hash file" && print
-    wget -O "$hashfile" "$hashurl"
-    if gpg --verify "$hashfile"; then
+    wget -O "$tmpdir/$hashfile" "$hashurl"
+    if gpg --verify "$tmpdir/$hashfile"; then
       checkversion
-      hash0=$(sed -n "$line"p "$hashfile" | cut -f 1 -d ' ')
+      hash0=$(sed -n "$line"p "$tmpdir/$hashfile" | cut -f 1 -d ' ')
       msg="The text file hash for $a1 is $hash0 downloading binary" && print
-      rm "$a1"
-      wget "$url"
-      hash1=$(shasum -a 256 "$a1" | cut -f 1 -d ' ')
+      rm "$tmpdir/$a1"
+      wget -P "$tmpdir" "$url"
+      hash1=$(shasum -a 256 "$tmpdir/$a1" | cut -f 1 -d ' ')
       msg="The binary hash for $a1 is $hash1 checking match" && print
       if [ "$hash1" = "$hash0" ]; then
         msg="Good match starting update" && print
@@ -79,19 +80,19 @@ checkversion () {
   if [ "$version" = 'x86_64' ] || [ "$version" = '1' ]; then
     a1=linux64
     url="$url0"
-    line=$(grep -n monero-linux-x64 "$hashfile" | cut -d : -f 1)
+    line=$(grep -n monero-linux-x64 "$tmpdir/$hashfile" | cut -d : -f 1)
     msg="Monerod version set to $a1" && print
   fi
   if [ "$version" = 'armv7l' ] || [ "$version" = '2' ]; then
     a1=linuxarm7
     url="$url1"
-    line=$(grep -n monero-linux-armv7 "$hashfile" | cut -d : -f 1)
+    line=$(grep -n monero-linux-armv7 "$tmpdir/$hashfile" | cut -d : -f 1)
     msg="Monerod version set to $a1" && print
   fi
   if [ "$version" = 'armv8l' ] || [ "$version" = '3' ]; then
     a1=linuxarm8
     url="$url2"
-    line=$(grep -n monero-linux-armv8 "$hashfile" | cut -d : -f 1)
+    line=$(grep -n monero-linux-armv8 "$tmpdir/$hashfile" | cut -d : -f 1)
     msg="Monerod version set to $a1" && print
   fi
   if [ "$line" = '0' ]; then
@@ -100,7 +101,7 @@ checkversion () {
     read -r -p "Select a version [1/2/3]: " version
     if [ "$version" = '' ]; then
       msg="No version selected exiting" && print
-      rm "$keyname" "$hashfile"
+      rm "$tmpdir/$keyname" "$tmpdir/$hashfile"
       exit 1
     fi
     checkversion
