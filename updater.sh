@@ -28,27 +28,6 @@ print () {
   echo -e "\033[1;33m$msg\033[0m"
 }
 
-#This will remove all files here from the xmr directory and replace them with updated versions
-rmfiles () {
-  msg="Removing old monero software files from $wd" && print
-  rm "$wd/LICENSE"
-  rm "$wd/monero-blockchain-ancestry"
-  rm "$wd/monero-blockchain-depth"
-  rm "$wd/monero-blockchain-export"
-  rm "$wd/monero-blockchain-import"
-  rm "$wd/monero-blockchain-mark-spent-outputs"
-  rm "$wd/monero-blockchain-prune"
-  rm "$wd/monero-blockchain-prune-known-spent-data"
-  rm "$wd/monero-blockchain-stats"
-  rm "$wd/monero-blockchain-usage"
-  rm "$wd/monerod"
-  rm "$wd/monero-gen-ssl-cert"
-  rm "$wd/monero-gen-trusted-multisig"
-  rm "$wd/monero-wallet-cli"
-  rm "$wd/monero-wallet-rpc"
-  #rm "$wd/monero-wallet-cli.log"
-}
-
 #This makes the backup and removes old files then extracts the verifed binary to the xmr directory
 updater () {
   if [ "$backup" = "1" ]; then 
@@ -56,7 +35,6 @@ updater () {
     rm -dr "$wd.bk"
     cp -r "$wd" "$wd.bk"
   fi
-  rmfiles
   msg="Extracting binary to $wd" && print
   mkdir "$wd"
   tar -xjvf "$a1" -C "$wd" --strip-components=1
