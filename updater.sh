@@ -71,11 +71,11 @@ verifier () {
     if gpg --verify "$hashfile"; then
       checkversion
       hash0=$(sed -n "$line"p "$hashfile" | cut -f 1 -d ' ')
-      msg="The text file hash for version $a1 is $hash0 downloading binary" && print
+      msg="The text file hash for $a1 is $hash0 downloading binary" && print
       rm "$a1"
       wget "$url"
       hash1=$(shasum -a 256 "$a1" | cut -f 1 -d ' ')
-      msg="The binary hash for version $a1 is $hash1 checking match" && print
+      msg="The binary hash for $a1 is $hash1 checking match" && print
       if [ "$hash1" = "$hash0" ]; then
         msg="Good match starting update" && print
         updater
