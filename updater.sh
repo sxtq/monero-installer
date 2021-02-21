@@ -162,4 +162,5 @@ checkupdate () {
 }
 
 msg="Current fingerprint: $fingerprint" && print
+msg="Current Directory: $wd" && print
 checkupdate
