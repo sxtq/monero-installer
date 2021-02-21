@@ -4,8 +4,10 @@ dirname="xmr" #Name of directory that contains monero software files (make it wh
 version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$dirname'//g')
 wd="$directory"/"$dirname" #To set manually use this example wd=/home/myUser/xmr
+
 checker0=1 #Change this number to 0 to avoid checking for a script update
 checker1=1 #Change this number to 0 to avoid checking for a monero update (Just download and install)
+backup=1 #Change this to 0 to not backup any files (If 0 script wont touch wallet files AT ALL)
 
 #Match the fingerprint below with the one here https://web.getmonero.org/resources/user-guides/verification-allos-advanced.html#22-verify-signing-key
 fingerprint="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
@@ -28,6 +30,7 @@ print () {
 
 #This will remove all files here from the xmr directory and replace them with updated versions
 rmfiles () {
+  msg="Removing old monero software files from $wd" && print
   rm "$wd/LICENSE"
   rm "$wd/monero-blockchain-ancestry"
   rm "$wd/monero-blockchain-depth"
@@ -48,9 +51,11 @@ rmfiles () {
 
 #This makes the backup and removes old files then extracts the verifed binary to the xmr directory
 updater () {
-  msg="Removing old backup and moving current version to backup file" && print
-  rm -dr "$wd.bk"
-  cp -r "$wd" "$wd.bk"
+  if [ "$backup" = "1" ]; then 
+    msg="Moving current version to backup file" && print
+    rm -dr "$wd.bk"
+    cp -r "$wd" "$wd.bk"
+  fi
   rmfiles
   msg="Extracting binary to $wd" && print
   mkdir "$wd"
