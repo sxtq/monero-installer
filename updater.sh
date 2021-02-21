@@ -75,7 +75,7 @@ verifier () {
       wget "$url"
       hash1=$(shasum -a 256 "$a1" | cut -f 1 -d ' ')
       msg="The binary hash is $hash1 checking match" && print
-      if [ "$hash1" = "$hash0" ] ; then
+      if [ "$hash1" = "$hash0" ]; then
         msg="Good match starting update" && print
         updater
       else
@@ -98,19 +98,19 @@ checkversion () {
     line=$(grep -n monero-linux-x64 "$hashfile" | cut -d : -f 1)
     msg="Monerod version set to $a1" && print
   fi
-  if [ "$version" = 'armv7l' ] || [ "$version" = '2' ] ; then
+  if [ "$version" = 'armv7l' ] || [ "$version" = '2' ]; then
     a1=linuxarm7
     url="$url1"
     line=$(grep -n monero-linux-armv7 "$hashfile" | cut -d : -f 1)
     msg="Monerod version set to $a1" && print
   fi
-  if [ "$version" = 'armv8l' ] || [ "$version" = '3' ] ; then
+  if [ "$version" = 'armv8l' ] || [ "$version" = '3' ]; then
     a1=linuxarm8
     url="$url2"
     line=$(grep -n monero-linux-armv8 "$hashfile" | cut -d : -f 1)
     msg="Monerod version set to $a1" && print
   fi
-  if [ "$line" = '0' ] ; then
+  if [ "$line" = '0' ]; then
     msg="Failed to detect version stopping now" && print
     exit 1
   fi
@@ -119,28 +119,28 @@ checkversion () {
 #This will check for an update by looking at the github release page for the latest version
 checkupdate () {
   #Checks for updates to this script, this can be turned off above.
-  if [ "$checker0" = "1" ] ; then
+  if [ "$checker0" = "1" ]; then
     cvrs=1.3.3
     lvrs=$(curl -s https://github.com/882wZS6Ps7/Monero-CLI-bash-updater/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
-    if [ "$lvrs" = "$cvrs" ] ; then
+    if [ "$lvrs" = "$cvrs" ]; then
       msg="This script is up to date current version is: $cvrs" && print
     else
       msg="This script is outdated latest version: $lvrs Current version: $cvrs" && print
     fi
   fi
-  if [ "$checker1" = "0" ] ; then
+  if [ "$checker1" = "0" ]; then
     verifier
     exit
   fi
   current=$("$wd"/monerod --version | sed 's/.*v\(.*\)-.*/\1/')
   latest=$(curl -s https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
-  if [ -f "$wd/monerod" ] ; then
+  if [ -f "$wd/monerod" ]; then
     w="update"
   else
     current="Not installed"
     w="install"
   fi
-  if [ "$current" = "$latest" ] ; then
+  if [ "$current" = "$latest" ]; then
     msg="No update avalible latest version: $latest Current version: $current" && print
     read -r -p "Would you like to update anyways? [N/y]: " output
     if [ "$output" = 'y' ] || [ "$output" = 'Y' ]; then
