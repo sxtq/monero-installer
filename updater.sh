@@ -71,11 +71,11 @@ verifier () {
     if gpg --verify "$hashfile"; then
       checkversion
       hash0=$(sed -n "$line"p "$hashfile" | cut -f 1 -d ' ')
-      msg="The text file hash is $hash0 downloading binary" && print
+      msg="The text file hash for version $a1 is $hash0 downloading binary" && print
       rm "$a1"
       wget "$url"
       hash1=$(shasum -a 256 "$a1" | cut -f 1 -d ' ')
-      msg="The binary hash is $hash1 checking match" && print
+      msg="The binary hash for version $a1 is $hash1 checking match" && print
       if [ "$hash1" = "$hash0" ]; then
         msg="Good match starting update" && print
         updater
@@ -112,8 +112,15 @@ checkversion () {
     msg="Monerod version set to $a1" && print
   fi
   if [ "$line" = '0' ]; then
-    msg="Failed to detect version stopping now" && print
-    exit 1
+    msg="Failed to detect version" && print
+    msg="1 = x64, 2 = armv7, 3 = armv8, Enter nothing to exit" && print
+    read -r -p "Select a version [1/2/3]: " version
+    if [ "$version" = '' ]; then
+      msg="No version selected exiting" && print
+      rm "$keyname" "$hashfile"
+      exit 1
+    fi
+    checkversion
   fi
 }
 
