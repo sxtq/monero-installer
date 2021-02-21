@@ -44,6 +44,7 @@ updater () {
 
 #This verifies the binary, signing key and hash file
 verifier () {
+  mkdir "$tmpdir"
   rm "$tmpdir/$keyname" "$tmpdir/$hashfile"
   msg="Downloading signing key and verifying signing key" && print
   wget -O "$tmpdir/$keyname" "$keyurl"
@@ -155,5 +156,4 @@ checkupdate () {
 
 msg="Current fingerprint: $fingerprint" && print
 msg="Current Directory: $wd" && print
-mkdir "$tmpdir"
 checkupdate
