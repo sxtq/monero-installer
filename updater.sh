@@ -44,6 +44,7 @@ updater () {
 
 #This verifies the binary, signing key and hash file
 verifier () {
+  mkdir "$tmpdir"
   rm "$tmpdir/$keyname" "$tmpdir/$hashfile"
   print "Downloading signing key and verifying signing key"
   wget -O "$tmpdir/$keyname" "$keyurl"
