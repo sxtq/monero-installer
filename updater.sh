@@ -126,9 +126,9 @@ checkupdate () {
     cvrs=1.3.4
     lvrs=$(curl -s https://github.com/882wZS6Ps7/Monero-CLI-bash-updater/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
     if [ "$lvrs" = "$cvrs" ]; then
-      print "This script is up to date current version is: $cvrs" green
+      print "[Script] This script is up to date current version is: $cvrs" green
     else
-      print "This script is outdated latest version: $lvrs Current version: $cvrs" red
+      print "[Script] This script is outdated latest version: $lvrs Current version: $cvrs" red
     fi
   fi
   if [ "$checker1" = "0" ]; then
@@ -144,7 +144,7 @@ checkupdate () {
     w="install"
   fi
   if [ "$current" = "$latest" ]; then
-    print "No update avalible latest version: $latest Current version: $current" green
+    print "[Monero] No update avalible latest version: $latest Current version: $current" green
     read -r -p "Would you like to update anyways? [N/y]: " output
     if [ "$output" = 'y' ] || [ "$output" = 'Y' ]; then
       print "Starting updater" yellow
@@ -153,7 +153,7 @@ checkupdate () {
       return 0
     fi
   else
-    print "Update avalible latest version: $latest Current version: $current" red
+    print "[Monero] Update avalible latest version: $latest Current version: $current" red
     read -r -p "Would you like to $w? [Y/n]: " output
     if [ "$output" = 'n' ] || [ "$output" = 'N' ]; then
       return 0
