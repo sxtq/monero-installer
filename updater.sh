@@ -123,7 +123,7 @@ checkversion () {
 checkupdate () {
   #Checks for updates to this script, this can be turned off above.
   if [ "$checker0" = "1" ]; then
-    cvrs=1.3.3
+    cvrs=1.3.4
     lvrs=$(curl -s https://github.com/882wZS6Ps7/Monero-CLI-bash-updater/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
     if [ "$lvrs" = "$cvrs" ]; then
       print "This script is up to date current version is: $cvrs" green
