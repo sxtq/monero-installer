@@ -4,7 +4,7 @@ dirname="xmr" #Name of directory that contains monero software files (make it wh
 version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$dirname'//g')
 wd="$directory/$dirname" #To set manually use this example wd=/home/myUser/xmr
-tmpdir=/tmp/xmr-75RvX3g3P #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
+tmpdir="/tmp/xmr-75RvX3g3P" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
 
 checker0=1 #Change this number to 0 to avoid checking for a script update
 checker1=1 #Change this number to 0 to avoid checking for a monero update (Just download and install)
@@ -64,7 +64,7 @@ verifier () {
     print "Downloading then checking the hash file" yellow
     wget -O "$tmpdir/$hashfile" "$hashurl"
     if gpg --verify "$tmpdir/$hashfile"; then
-      checkversion
+      line=$(grep -n "$locate" "$tmpdir/$hashfile" | cut -d : -f 1)
       hash0=$(sed -n "$line"p "$tmpdir/$hashfile" | cut -f 1 -d ' ')
       print "The text file hash for $a1 is $hash0 downloading binary" yellow
       rm "$tmpdir/$a1"
@@ -87,26 +87,25 @@ verifier () {
 
 #This is checks what version the verifier needs to download and  what line is needed in the hash file
 checkversion () {
-  line=0
   if [ "$version" = 'x86_64' ] || [ "$version" = '1' ]; then
     a1=linux64
     url="$url0"
-    line=$(grep -n monero-linux-x64 "$tmpdir/$hashfile" | cut -d : -f 1)
     print "Monerod version set to $a1" green
+    locate="monero-linux-x64"
   fi
   if [ "$version" = 'armv7l' ] || [ "$version" = '2' ]; then
     a1=linuxarm7
     url="$url1"
-    line=$(grep -n monero-linux-armv7 "$tmpdir/$hashfile" | cut -d : -f 1)
     print "Monerod version set to $a1" green
+    locate="monero-linux-armv7"
   fi
   if [ "$version" = 'armv8l' ] || [ "$version" = '3' ]; then
     a1=linuxarm8
     url="$url2"
-    line=$(grep -n monero-linux-armv8 "$tmpdir/$hashfile" | cut -d : -f 1)
     print "Monerod version set to $a1" green
+    locate="monero-linux-armv8"
   fi
-  if [ "$line" = '0' ]; then
+  if [ "$a1" = "" ]; then
     print "Failed to detect version" red
     print "1 = x64, 2 = armv7, 3 = armv8, Enter nothing to exit" yellow
     read -r -p "Select a version [1/2/3]: " version
@@ -164,6 +163,13 @@ checkupdate () {
   fi
 }
 
+checkversion
 print "Current fingerprint: $fingerprint" yellow
-print "Current Directory: $wd" yellow
+print "Current install directory: $wd" yellow
+print "Current temp directory: $tmpdir" yellow
+if [ "$backup" = "1" ]; then
+  print "Backup ON script will copy /$dirname/ files to $wd.bk" yellow
+else
+  print "Backup OFF script will not backup /$dirname/ files" yellow
+fi
 checkupdate
