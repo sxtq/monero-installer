@@ -3,7 +3,7 @@
 dirname="xmr" #Name of directory that contains monero software files (make it whatever you want)
 version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$dirname'//g')
-wd="$directory"/"$dirname" #To set manually use this example wd=/home/myUser/xmr
+wd="$directory/$dirname" #To set manually use this example wd=/home/myUser/xmr
 tmpdir=/tmp/xmr-75RvX3g3P #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
 
 checker0=1 #Change this number to 0 to avoid checking for a script update
