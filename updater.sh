@@ -49,6 +49,7 @@ updater () {
   print "Extracting binary to $wd" yellow
   mkdir "$wd"
   tar -xjvf "$tmpdir/$a1" -C "$wd" --strip-components=1
+  print "Removing temp files (Binary/Hash file/Signing key)"
   rm "$tmpdir/$keyname" "$tmpdir/$hashfile" "$tmpdir/$a1"
 }
 
@@ -75,10 +76,10 @@ verifier () {
         print "Good match starting update" green
         updater
       else
-        print "Failed match stopping updater" red
+        print "Bad match binary does not match hash file stopping updater" red
       fi
     else
-      print "Failed to verify hashes stopping updater" red
+      print "Failed to verify hash file stopping updater" red
     fi
   else
     print "Failed to verify signing key stopping updater" red
