@@ -41,6 +41,11 @@ print () {
 
 #This makes the backup and removes old files then extracts the verifed binary to the xmr directory
 updater () {
+  if pgrep monerod; then
+    print "Stopping monerod to protect database during upgrade" yellow
+    "$wd"/monerod exit #Stops monerod to make sure it does not corrupt database when updating
+    sleep 3
+  fi
   if [ "$backup" = "1" ]; then
     print "Moving current version to backup file" yellow
     rm -dr "$wd.bk"
