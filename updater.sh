@@ -11,11 +11,12 @@ checker0=1 #Change this number to 0 to avoid checking for a script update
 checker1=1 #Change this number to 0 to avoid checking for a monero update (Just download and install)
 backup=1 #Change this to 0 to not backup any files (If 0 script wont touch wallet files AT ALL)
 
-#Match the fingerprint below with the one here https://web.getmonero.org/resources/user-guides/verification-allos-advanced.html#22-verify-signing-key
+#Match the fingerprint below with the one here
+# https://web.getmonero.org/resources/user-guides/verification-allos-advanced.html#22-verify-signing-key
 fingerprint="81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92"
 keyurl=https://raw.githubusercontent.com/monero-project/monero/master/utils/gpg_keys/binaryfate.asc #Keyfile download URL
 keyname=binaryfate.asc #Key file name (Used to help the script locate the file)
-hashurl=https://www.getmonero.org/downloads/hashes.txt #Hash file download URL 
+hashurl=https://www.getmonero.org/downloads/hashes.txt #Hash file download URL
 hashfile=hashes.txt #Hash file name (Used to help the script locate the file)
 
 #x86_64 CLI URL
