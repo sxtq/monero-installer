@@ -7,8 +7,8 @@ directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$dirname'//g')
 wd="$directory/$dirname" #To set manually use this example wd=/home/myUser/xmr
 tmpdir="/tmp/xmr-75RvX3g3P" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
 
-checker0=0 #Change this number to 0 to avoid checking for a script update
-checker1=0 #Change this number to 0 to avoid checking for a monero update (Just download and install)
+checker0=1 #Change this number to 0 to avoid checking for a script update
+checker1=1 #Change this number to 0 to avoid checking for a monero update (Just download and install)
 backup=1 #Change this to 0 to not backup any files (If 0 script wont touch wallet files AT ALL)
 
 #Match the fingerprint below with the one here
