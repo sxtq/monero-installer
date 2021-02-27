@@ -31,11 +31,9 @@ print () {
   nc='\033[0m'
   if [ "$2" = "green" ]; then
     color='\033[1;32m'
-  fi
-  if [ "$2" = "yellow" ]; then
+  elif [ "$2" = "yellow" ]; then
     color='\033[1;33m'
-  fi
-  if [ "$2" = "red" ]; then
+  elif [ "$2" = "red" ]; then
     color='\033[1;31m'
   fi
   echo -e "${color}$1${nc}"
@@ -100,24 +98,21 @@ checkversion () {
     url="$url0"
     print "Monerod version set to $a1" green
     locate="monero-linux-x64"
-  fi
-  if [ "$version" = 'armv7l' ] || [ "$version" = '2' ]; then
+  elif [ "$version" = 'armv7l' ] || [ "$version" = '2' ]; then
     a1=linuxarm7
     url="$url1"
     print "Monerod version set to $a1" green
     locate="monero-linux-armv7"
-  fi
-  if [ "$version" = 'armv8l' ] || [ "$version" = '3' ]; then
+  elif [ "$version" = 'armv8l' ] || [ "$version" = '3' ]; then
     a1=linuxarm8
     url="$url2"
     print "Monerod version set to $a1" green
     locate="monero-linux-armv8"
-  fi
-  if [ "$a1" = "" ]; then
+  elif [ -z "$a1" ]; then
     print "Failed to detect version" red
     print "1 = x64, 2 = armv7, 3 = armv8, Enter nothing to exit" yellow
     read -r -p "Select a version [1/2/3]: " version
-    if [ "$version" = '' ]; then
+    if [ -z "$version" ]; then
       print "No version selected exiting" red
       rm "$tmpdir/$keyname" "$tmpdir/$hashfile"
       exit 1
@@ -128,8 +123,7 @@ checkversion () {
 
 #This will check for an update by looking at the github release page for the latest version
 checkupdate () {
-  #Checks for updates to this script, this can be turned off above.
-  if [ "$checker0" = "1" ]; then
+  if [ "$checker0" = "1" ]; then #Checks for updates to this script, this can be turned off above.
     cvrs=1.3.4
     lvrs=$(curl -s https://github.com/882wZS6Ps7/Monero-CLI-bash-updater/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
     if [ "$lvrs" = "$cvrs" ]; then
@@ -138,35 +132,30 @@ checkupdate () {
       print "[Script] Update avalible latest: $lvrs Current: $cvrs" red
     fi
   fi
-  if [ "$checker1" = "0" ]; then
-    verifier
-    exit
-  fi
-  current=$("$wd"/monerod --version | sed 's/.*v\(.*\)-.*/\1/')
-  latest=$(curl -s https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
-  if [ -f "$wd/monerod" ]; then
-    w="update"
-  else
-    current="Not installed"
-    w="install"
-  fi
-  if [ "$current" = "$latest" ]; then
-    print "[Monero] No update avalible latest: $latest Current: $current" green
-    read -r -p "Would you like to update anyways? [N/y]: " output
-    if [ "$output" = 'y' ] || [ "$output" = 'Y' ]; then
-      print "Starting updater" yellow
-      verifier
+  if [ "$checker1" = "1" ]; then
+    if [ -f "$wd/monerod" ]; then
+      current=$("$wd"/monerod --version | sed 's/.*v\(.*\)-.*/\1/')
     else
-      return 0
+      current="Not installed"
     fi
-  else
-    print "[Monero] Update avalible latest: $latest Current: $current" red
-    read -r -p "Would you like to $w? [Y/n]: " output
-    if [ "$output" = 'n' ] || [ "$output" = 'N' ]; then
-      return 0
+    if [ "$current" = "$latest" ]; then
+      print "[Monero] No update avalible latest: $latest Current: $current" green
+      read -r -p "Would you like to install anyways? [N/y]: " output
+      if [ "$output" = 'y' ] || [ "$output" = 'Y' ]; then
+        print "Starting updater" yellow
+        verifier
+      else
+        exit 1
+      fi
     else
-      print "Starting updater" yellow
-      verifier
+      print "[Monero] Update avalible latest: $latest Current: $current" red
+      read -r -p "Would you like to install? [Y/n]: " output
+      if [ "$output" = 'n' ] || [ "$output" = 'N' ]; then
+        exit 1
+      else
+        print "Starting updater" yellow
+        verifier
+      fi
     fi
   fi
 }
