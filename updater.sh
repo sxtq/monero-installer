@@ -133,6 +133,7 @@ checkupdate () {
     fi
   fi
   if [ "$checker1" = "1" ]; then
+    latest=$(curl -s https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
     if [ -f "$wd/monerod" ]; then
       current=$("$wd"/monerod --version | sed 's/.*v\(.*\)-.*/\1/')
     else
