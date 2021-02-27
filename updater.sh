@@ -141,7 +141,7 @@ checkupdate () {
     fi
     if [ "$current" = "$latest" ]; then
       print "[Monero] No update avalible latest: $latest Current: $current" green
-      read -r -p "Would you like to install anyways? [N/y]: " output
+      read -r -p "Would you like to install? [N/y]: " output
       if [ "$output" = 'y' ] || [ "$output" = 'Y' ]; then
         print "Starting updater" yellow
         verifier
@@ -149,7 +149,7 @@ checkupdate () {
         exit 1
       fi
     else
-      print "[Monero] Update avalible latest: $latest Current: $current" red
+      print "[Monero] Update avalible latest: $latest Current: $current" yellow
       read -r -p "Would you like to install? [Y/n]: " output
       if [ "$output" = 'n' ] || [ "$output" = 'N' ]; then
         exit 1
