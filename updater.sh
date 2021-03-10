@@ -96,7 +96,7 @@ updater () {
   fi
   if [ "$backup" = "1" ]; then #Removes old backup copies currect directory to directory.bk
     print "Moving current version to backup file" yellow
-    rm -v -dr "$working_directory.bk"
+    rm -vdr "$working_directory.bk"
     cp -r "$working_directory" "$working_directory.bk"
   fi
   print "Extracting binary to $working_directory" yellow
