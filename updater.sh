@@ -6,6 +6,7 @@ version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$directory_name'//g')
 working_directory="$directory/$directory_name" #To set manually use this example working_directory=/home/myUser/xmr
 temp_directory="/tmp/xmr-75RvX3g3P" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
+tor_urls=0
 
 checker0=1 #Change this number to 0 to avoid checking for a script update
 checker1=1 #Change this number to 0 to avoid checking for a monero update (Just download and install)
@@ -25,6 +26,18 @@ url_linux64=https://downloads.getmonero.org/cli/linux64
 url_linuxarm7=https://downloads.getmonero.org/cli/linuxarm7
 #arm8 CLI URL
 url_linuxarm8=https://downloads.getmonero.org/cli/linuxarm8
+
+if [ "$tor_urls" = "1" ]; then
+  echo -e "\033[1;33mTOR ON, URLS SET TO ONION URLS\033[0m"
+  #TOR Hash URL
+  hash_url=monerotoruzizulg5ttgat2emf4d6fbmiea25detrmmy7erypseyteyd.onion/downloads/hashes.txt
+  #TOR x86_64 CLI URL
+  url_linux64=dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/linux64
+  #TOR arm7 CLI URL
+  url_linuxarm7=dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/linuxarm7
+  #TOR arm8 CLI URL
+  url_linuxarm8=dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/linuxarm8
+fi
 
 #Used for printing text on the screen
 print () {
