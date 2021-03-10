@@ -6,7 +6,7 @@ version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$directory_name'//g')
 working_directory="$directory/$directory_name" #To set manually use this example working_directory=/home/myUser/xmr
 temp_directory="/tmp/xmr-75RvX3g3P" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
-tor_urls=0
+tor_urls=0 # This well run the the script using TOR urls (Script needs to be ran with torsocks or on Tails OS)
 
 checker0=1 #Change this number to 0 to avoid checking for a script update
 checker1=1 #Change this number to 0 to avoid checking for a monero update (Just download and install)
