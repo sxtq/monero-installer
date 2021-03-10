@@ -29,14 +29,62 @@ url_linuxarm8=https://downloads.getmonero.org/cli/linuxarm8
 #Used for printing text on the screen
 print () {
   no_color='\033[0m'
-  if [ "$2" = "green" ]; then
+  if [ "$2" = "green" ]; then     #Print Green
     color='\033[1;32m'
-  elif [ "$2" = "yellow" ]; then
+  elif [ "$2" = "yellow" ]; then  #Print Yellow
     color='\033[1;33m'
-  elif [ "$2" = "red" ]; then
+  elif [ "$2" = "red" ]; then     #Print Red
     color='\033[1;31m'
   fi
-  echo -e "${color}$1${no_color}"
+  echo -e "${color}$1${no_color}" #Takes message and color and prints to screen
+}
+
+#Download and verifys the key we will use to verify the binary
+get_key () {
+  print "Downloading and verifying signing key" yellow
+  rm -v "$temp_directory/$key_name"
+  wget -O "$temp_directory/$key_name" "$key_url"
+  if gpg --keyid-format long --with-fingerprint "$temp_directory/$key_name" | grep -q "$fingerprint"; then
+    print "Good signing key importing signing key" green
+    gpg --import "$temp_directory/$key_name"
+  else
+    print "Failed to verify signing key stopping script" red
+    exit
+  fi
+}
+
+#Downloads the hash file then verifies it with the key we downloaded
+get_hash () {
+  print "Downloading and verifying the hash file" yellow
+  rm -v "$temp_directory/$hash_file"
+  wget -O "$temp_directory/$hash_file" "$hash_url"
+  if gpg --verify "$temp_directory/$hash_file"; then
+    print "Good hash file" green
+  else
+    print "Failed to verify hash file stopping script" red
+    exit
+  fi
+}
+
+#Downloads the binary then shasums it and matches the hash with the hash file
+get_binary () {
+  print "Downloading and verifying the binary version: $locate" yellow
+  rm -v "$temp_directory/$binary_name"
+  wget -P "$temp_directory" "$url" #Downloads the binary
+
+  print "Checking the sum from the hash file and the binary" yellow
+  line=$(grep -n "$locate" "$temp_directory/$hash_file" | cut -d : -f 1) #Gets the version line(hash) from hash file
+  file_hash=$(sed -n "$line"p "$temp_directory/$hash_file" | cut -f 1 -d ' ')
+  binary_hash=$(shasum -a 256 "$temp_directory/$binary_name" | cut -f 1 -d ' ')
+
+  print "File hash:     $file_hash" yellow
+  print "Binary hash:   $binary_hash" yellow
+  if [ "$file_hash" = "$binary_hash" ]; then #Match the hashfile and binary
+    print "Good match" green
+  else
+    print "Bad match binary does not match hash file stopping updater" red
+    exit
+  fi
 }
 
 #This makes the backup and removes old files then extracts the verifed binary to the xmr directory
@@ -46,49 +94,25 @@ updater () {
     "$working_directory"/monerod exit
     sleep 3
   fi
-  if [ "$backup" = "1" ]; then
+  if [ "$backup" = "1" ]; then #Removes old backup copies currect directory to directory.bk
     print "Moving current version to backup file" yellow
-    rm -dr "$working_directory.bk"
+    rm -v -dr "$working_directory.bk"
     cp -r "$working_directory" "$working_directory.bk"
   fi
   print "Extracting binary to $working_directory" yellow
   mkdir "$working_directory"
   tar -xjvf "$temp_directory/$binary_name" -C "$working_directory" --strip-components=1
   print "Removing temp files (Binary/Hash file/Signing key)"
-  rm "$temp_directory/$key_name" "$temp_directory/$hash_file" "$temp_directory/$binary_name"
+  rm -v "$temp_directory/$key_name" "$temp_directory/$hash_file" "$temp_directory/$binary_name" #Clean up install files
 }
 
 #This verifies the binary, signing key and hash file
 verifier () {
   mkdir "$temp_directory"
-  rm "$temp_directory/$key_name" "$temp_directory/$hash_file"
-  print "Downloading signing key and verifying signing key" yellow
-  wget -O "$temp_directory/$key_name" "$key_url"
-  if gpg --keyid-format long --with-fingerprint "$temp_directory/$key_name" | grep -q "$fingerprint"; then
-    print "Good signing key importing signing key" green
-    gpg --import "$temp_directory/$key_name"
-    print "Downloading then checking the hash file" yellow
-    wget -O "$temp_directory/$hash_file" "$hash_url"
-    if gpg --verify "$temp_directory/$hash_file"; then
-      line=$(grep -n "$locate" "$temp_directory/$hash_file" | cut -d : -f 1)
-      hash0=$(sed -n "$line"p "$temp_directory/$hash_file" | cut -f 1 -d ' ')
-      print "The text file hash for $binary_name is $hash0 downloading binary" yellow
-      rm "$temp_directory/$binary_name"
-      wget -P "$temp_directory" "$url"
-      hash1=$(shasum -a 256 "$temp_directory/$binary_name" | cut -f 1 -d ' ')
-      print "The binary hash for $binary_name is $hash1 checking match" yellow
-      if [ "$hash1" = "$hash0" ]; then
-        print "Good match starting update" green
-        updater
-      else
-        print "Bad match binary does not match hash file stopping updater" red
-      fi
-    else
-      print "Failed to verify hash file stopping updater" red
-    fi
-  else
-    print "Failed to verify signing key stopping updater" red
-  fi
+  get_key
+  get_hash
+  get_binary
+  updater
 }
 
 #This is checks what version the verifier needs to download and  what line is needed in the hash file
