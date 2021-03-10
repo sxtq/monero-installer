@@ -49,7 +49,7 @@ get_key () {
     gpg --import "$temp_directory/$key_name"
   else
     print "Failed to verify signing key stopping script" red
-    exit
+    exit 1
   fi
 }
 
@@ -62,7 +62,7 @@ get_hash () {
     print "Good hash file" green
   else
     print "Failed to verify hash file stopping script" red
-    exit
+    exit 1
   fi
 }
 
@@ -83,7 +83,7 @@ get_binary () {
     print "Good match" green
   else
     print "Bad match binary does not match hash file stopping updater" red
-    exit
+    exit 1
   fi
 }
 
