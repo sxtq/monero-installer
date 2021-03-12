@@ -7,7 +7,7 @@ Just put the updater.sh script where you want the xmr directory that contains th
 
 First Download the updater with this command (This requires you have git installed for this command)
 ```
-$ git clone https://github.com/882wZS6Ps7/Monero-CLI-bash-updater.git
+$ git clone https://github.com/sxtq/Monero-CLI-bash-updater.git
 ```
 Now move the updater.sh script to the where you want the xmr directory
 ```
