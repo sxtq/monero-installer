@@ -43,7 +43,7 @@ while test "$#" -gt 0; do
     -h|--help)
       echo "  -h, --help                              show list of startup flags"
       echo "  -d, --directory /path/to/dir            manually set directory path (This will add /$directory_name to the end)"
-      echo "  -f, --fingerprint fingerprint           manually set fingerprint use quotes around fingerprint if the fingerprint has spcaes"
+      echo "  -f, --fingerprint fingerprint           manually set fingerprint use quotes around fingerprint if the fingerprint has spaces"
       echo "  -n, --name dirName                      manually set the name for the directory used to store the monero files"
       echo "  -v, --version number                    manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8"
       exit 0
