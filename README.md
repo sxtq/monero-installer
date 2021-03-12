@@ -25,11 +25,11 @@ This script can also be placed inside the xmr directory with the wallet files an
 
 When first downloading this script it is recommended you verify the variables haven't been modified match the urls and fingerprint with the urls on the official Monero website https://web.getmonero.org/resources/user-guides/verification-allos-advanced.html
 ```
-  -h, --help                              show list of startup flags
-  -d, --directory /path/to/dir            manually set directory path (This will add /xmr to the end)
-  -f, --fingerprint fingerprint           manually set fingerprint use quotes around fingerprint if the fingerprint has spcaes
-  -n, --name dirName                      manually set the name for the directory used to store the monero files
-  -v, --version number                    manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8
+ -h, --help                              show list of startup flags
+ -d, --directory /path/to/dir            manually set directory path (This will add /xmr to the end)
+ -f, --fingerprint fingerprint           manually set fingerprint use quotes around fingerprint if the fingerprint has spcaes
+ -n, --name dirName                      manually set the name for the directory used to store the monero files
+ -v, --version number                    manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8
 ```
 ## Examples
 ```
