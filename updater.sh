@@ -38,6 +38,67 @@ if [ "$tor_urls" = "1" ]; then
   url_linuxarm8=dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/linuxarm8
 fi
 
+while test "$#" -gt 0; do
+  case "$1" in
+    -h|--help)
+      echo "  -h, --help                              show list of startup flags"
+      echo "  -d, --directory /path/to/dir            manually set directory path (This will add /$directory_name to the end)"
+      echo "  -f, --fingerprint fingerprint           manually set fingerprint use quotes around fingerprint if the fingerprint has spcaes"
+      echo "  -n, --name dirName                      manually set the name for the directory used to store the monero files"
+      echo "  -v, --version number                    manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8"
+      exit 0
+      ;;
+    -f|--fingerprint)
+      shift
+      if test "$#" -gt 0; then
+        export output_fingerprint="$1"
+      else
+        echo "No fingerprint specified"
+        exit 1
+      fi
+      shift
+      ;;
+    -n|--name)
+      shift
+      if test "$#" -gt 0; then
+        export directory_name="$1"
+        tmp=1
+      else
+        echo "No name specified"
+        exit 1
+      fi
+      shift
+      ;;
+    -d|--directory)
+      shift
+      if test "$#" -gt 0; then
+        directory="${1%/}"
+        tmp=1
+      else
+        echo "No directory specified"
+        exit 1
+      fi
+      shift
+      ;;
+    -v|--version)
+      shift
+      if test "$#" -gt 0; then
+        export version="$1"
+      else
+        echo "No directory specified"
+        exit 1
+      fi
+      shift
+      ;;
+    *)
+      break
+      ;;
+  esac
+  if [ "$tmp" = "1" ]; then
+    export working_directory="$directory/$directory_name"
+  fi
+done
+
 #Used for printing text on the screen
 print () {
   no_color='\033[0m'
