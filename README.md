@@ -31,9 +31,12 @@ $   -f, --fingerprint fingerprint           manually set fingerprint use quotes 
 $   -n, --name dirName                      manually set the name for the directory used to store the monero files
 $   -v, --version number                    manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8
 
-#Examples
+## Examples
+```
 $ ./updater.sh -f "81AC 591F E9C4 B65C 5806  AFC3 F0AF 4D46 2A0B DF92" -d /home/user1/Documents -n Monero-Wallet
+```
 This will put the Monero-Wallet directory with the extacted files and wallet files inside /home/user1/Documents/ so /home/user1/Documents/Monero-Wallet
-
+```
 $ ./updater.sh -d /home/user1/
+```
 This will put the default directory name "xmr" in the /home/user1/ directory so /home/user1/xmr/ Inside the xmr dir is the wallet and software files
