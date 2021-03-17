@@ -246,7 +246,7 @@ main () {
   fingerprint=$(echo "$output_fingerprint" | tr -d " \t\n\r")
 
   checkversion
-  if wget -q --spider http://github.com && [ "$offline" = "1" ]; then
+  if wget -q --spider http://github.com && [ "$offline" = "0" ]; then
     print "Online install, the script will download the needed files for you" green
     net=1
   else
