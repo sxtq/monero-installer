@@ -6,7 +6,6 @@ version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$directory_name'//g')
 working_directory="$directory/$directory_name" #To set manually use this example working_directory=/home/myUser/xmr
 temp_directory="/tmp/xmr-75RvX3g3P" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
-tor_urls=0 #This well run the the script using TOR urls (Script needs to be ran with torsocks or on Tails OS)
 offline=0 #Change this to 1 to run in offline mode
 backup=1 #Change this to 0 to not backup any files (If 0 script wont touch wallet files AT ALL)
 
@@ -24,18 +23,6 @@ url_linux64=https://downloads.getmonero.org/cli/linux64
 url_linuxarm7=https://downloads.getmonero.org/cli/linuxarm7
 #arm8 CLI URL
 url_linuxarm8=https://downloads.getmonero.org/cli/linuxarm8
-
-if [ "$tor_urls" = "1" ]; then
-  echo -e "\033[1;33mTOR ON, URLS SET TO ONION URLS\033[0m"
-  #TOR Hash URL
-  hash_url=monerotoruzizulg5ttgat2emf4d6fbmiea25detrmmy7erypseyteyd.onion/downloads/hashes.txt
-  #TOR x86_64 CLI URL
-  url_linux64=dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/linux64
-  #TOR arm7 CLI URL
-  url_linuxarm7=dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/linuxarm7
-  #TOR arm8 CLI URL
-  url_linuxarm8=dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/linuxarm8
-fi
 
 while test "$#" -gt 0; do
   case "$1" in
@@ -199,17 +186,14 @@ checkversion () {
   if [ "$version" = 'x86_64' ] || [ "$version" = '1' ]; then
     binary_name=linux64
     url="$url_linux64"
-    print "Monerod version set to $binary_name" green
     version_name="monero-linux-x64"
   elif [ "$version" = 'armv7l' ] || [ "$version" = '2' ]; then
     binary_name=linuxarm7
     url="$url_linuxarm7"
-    print "Monerod version set to $binary_name" green
     version_name="monero-linux-armv7"
   elif [ "$version" = 'armv8l' ] || [ "$version" = '3' ]; then
     binary_name=linuxarm8
     url="$url_linuxarm8"
-    print "Monerod version set to $binary_name" green
     version_name="monero-linux-armv8"
   elif [ -z "$binary_name" ]; then
     print "Failed to detect version manual selection required" red
@@ -222,6 +206,7 @@ checkversion () {
     fi
     checkversion
   fi
+  print "Monerod version set to $binary_name" green
 }
 
 fail () {
@@ -230,13 +215,11 @@ fail () {
   print "Signing key verifcation : $check_0" yellow
   print "   Hashfile verifcation : $check_1" yellow
   print "     Binary verifcation : $check_2" yellow
-  read -r -p "Would you like to remove the files? [Y/n]: " output
-  if [ "$output" = 'N' ] || [ "$output" = 'n' ]; then
-    exit 1
-  else
+  read -r -p "Would you like to remove the files? [N/y]: " output
+  if [ "$output" = 'Y' ] || [ "$output" = 'y' ]; then
     rm -v "$temp_directory/$key_name" "$temp_directory/$hash_file" "$temp_directory/$binary_name"
-    exit 1
   fi
+  exit 1
 }
 
 main () {
@@ -281,7 +264,6 @@ main () {
   if [ "$output" = 'N' ] || [ "$output" = 'n' ]; then
     exit 1
   else
-    print "Starting install" yellow
     mkdir -v "$temp_directory"
     get_key
     get_hash
