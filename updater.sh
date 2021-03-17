@@ -7,8 +7,7 @@ directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$directory_name'//g')
 working_directory="$directory/$directory_name" #To set manually use this example working_directory=/home/myUser/xmr
 temp_directory="/tmp/xmr-75RvX3g3P" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
 tor_urls=0 #This well run the the script using TOR urls (Script needs to be ran with torsocks or on Tails OS)
-
-update_check=1 #Change this number to 0 to avoid checking for a monero update (Just download and install)
+offline=0 #Change this to 1 to run in offline mode
 backup=1 #Change this to 0 to not backup any files (If 0 script wont touch wallet files AT ALL)
 
 #Match the fingerprint below with the one here
@@ -62,7 +61,6 @@ while test "$#" -gt 0; do
       shift
       if test "$#" -gt 0; then
         export directory_name="$1"
-        tmp=1
       else
         echo "No name specified"
         exit 1
@@ -71,11 +69,15 @@ while test "$#" -gt 0; do
       ;;
     -d|--directory)
       shift
-      if test "$#" -gt 0; then
-        directory="${1%/}"
-        tmp=1
+      if [ -d "$1" ]; then
+        if test "$#" -gt 0; then
+          directory="${1%/}"
+        else
+          echo "No directory specified"
+          exit 1
+        fi
       else
-        echo "No directory specified"
+        echo "$1 does not exist"
         exit 1
       fi
       shift
@@ -94,9 +96,6 @@ while test "$#" -gt 0; do
       break
       ;;
   esac
-  if [ "$tmp" = "1" ]; then
-    export working_directory="$directory/$directory_name"
-  fi
 done
 
 #Used for printing text on the screen
@@ -115,38 +114,43 @@ print () {
 #Download and verifys the key we will use to verify the binary
 get_key () {
   print "Downloading and verifying signing key" yellow
-  rm -v "$temp_directory/$key_name"
-  wget -O "$temp_directory/$key_name" "$key_url"
+  if [ "$net" = "1" ]; then
+    rm -v "$temp_directory/$key_name"
+    wget -O "$temp_directory/$key_name" "$key_url"
+  fi
   if gpg --with-colons --import-options import-show --dry-run --import < "$temp_directory/$key_name" | grep -q "$fingerprint"; then
     print "Good signing key importing signing key" green
     gpg -v --import "$temp_directory/$key_name"
     check_0=1
   else
-    print "Failed to verify signing key stopping script" red
-    exit 1
+    print "Failed to verify signing key" red
+    fail
   fi
 }
 
 #Downloads the hash file then verifies it with the key we downloaded
 get_hash () {
   print "Downloading and verifying the hash file" yellow
-  rm -v "$temp_directory/$hash_file"
-  wget -O "$temp_directory/$hash_file" "$hash_url"
+  if [ "$net" = "1" ]; then
+    rm -v "$temp_directory/$hash_file"
+    wget -O "$temp_directory/$hash_file" "$hash_url"
+  fi
   if gpg -v --verify "$temp_directory/$hash_file"; then
     print "Good hash file" green
     check_1=1
   else
-    print "Failed to verify hash file stopping script" red
-    exit 1
+    print "Failed to verify hash file" red
+    fail
   fi
 }
 
 #Downloads the binary then shasums it and matches the hash with the hash file
 get_binary () {
   print "Downloading and verifying the binary version: $version_name" yellow
-  rm -v "$temp_directory/$binary_name"
-  wget -P "$temp_directory" "$url" #Downloads the binary
-
+  if [ "$net" = "1" ]; then
+    rm -v "$temp_directory/$binary_name"
+    wget -P "$temp_directory" "$url" #Downloads the binary
+  fi
   print "Checking the sum from the hash file and the binary" yellow
   line=$(grep -n "$version_name" "$temp_directory/$hash_file" | cut -d : -f 1) #Gets the version line(hash) from hash file
   file_hash=$(sed -n "$line"p "$temp_directory/$hash_file" | cut -f 1 -d ' ')
@@ -158,8 +162,8 @@ get_binary () {
     print "Good match" green
     check_2=1
   else
-    print "Bad match binary does not match hash file stopping updater" red
-    exit 1
+    print "Bad match binary does not match hash file" red
+    fail
   fi
 }
 
@@ -178,8 +182,10 @@ updater () {
   print "Extracting binary to $working_directory" yellow
   mkdir -v "$working_directory"
   tar -xjvf "$temp_directory/$binary_name" -C "$working_directory" --strip-components=1
-  print "Removing temp files (Binary/Hash file/Signing key)"
-  rm -v "$temp_directory/$key_name" "$temp_directory/$hash_file" "$temp_directory/$binary_name" #Clean up install files
+  if [ "$net" = "1" ]; then
+    print "Removing temp files (Binary/Hash file/Signing key)"
+    rm -v "$temp_directory/$key_name" "$temp_directory/$hash_file" "$temp_directory/$binary_name" #Clean up install files
+  fi
 }
 
 #This is checks what version the verifier needs to download and  what line is needed in the hash file
@@ -212,27 +218,27 @@ checkversion () {
   fi
 }
 
-#This will check for an update by looking at the github release page for the latest version
-checkupdate () {
-  if [ "$update_check" = "1" ]; then
-    latest=$(curl -s https://github.com/monero-project/monero/releases/latest | sed 's/.*v\(.*\)">.*/\1/')
-    if [ -f "$working_directory/monerod" ]; then
-      current=$("$working_directory"/monerod --version | sed 's/.*v\(.*\)-.*/\1/')
-    else
-      current="Not installed"
-    fi
-  fi
-  print "[Monero] Version latest: $latest Current: $current" green
-  read -r -p "Would you like to install? [Y/n]: " output
+fail () {
+  print "Failed to meet all requiremnts the script wont update" red
+  print "Path to files : $temp_directory" yellow
+  print "Signing key verifcation : $check_0" yellow
+  print "   Hashfile verifcation : $check_1" yellow
+  print "     Binary verifcation : $check_2" yellow
+  read -r -p "Would you like to remove the files? [Y/n]: " output
   if [ "$output" = 'N' ] || [ "$output" = 'n' ]; then
     exit 1
   else
-    print "Starting install" yellow
-    return 0
+    rm -v "$temp_directory/$key_name" "$temp_directory/$hash_file" "$temp_directory/$binary_name"
+    exit 1
   fi
 }
 
 main () {
+  check_0=0
+  check_1=0
+  check_2=0
+  working_directory="$directory/$directory_name"
+
   if [ -z "$output_fingerprint" ]; then
     print "No hardcoded fingerprint inside the script" red
     read -r -p "Input fingerprint: " output_fingerprint
@@ -240,6 +246,22 @@ main () {
   fingerprint=$(echo "$output_fingerprint" | tr -d " \t\n\r")
 
   checkversion
+  if wget -q --spider http://github.com && [ "$offline" = "1" ]; then
+    print "Online install, the script will download the needed files for you" green
+    net=1
+  else
+    temp_directory=$(pwd)
+    print "Offline Mode looking for files in $temp_directory" red
+    if [ -f "$temp_directory/$key_name" ] && [ -f "$temp_directory/$hash_file" ] && [ -f "$temp_directory/$binary_name" ]; then
+      print "All files found" green
+    else
+      print "Failed to find install files" red
+      print "$temp_directory/$key_name" red
+      print "$temp_directory/$hash_file" red
+      print "$temp_directory/$binary_name" red
+      exit 1
+    fi
+  fi
   print "Current fingerprint: $output_fingerprint" yellow
   print "Current install directory: $working_directory" yellow
   print "Current temp directory: $temp_directory" yellow
@@ -248,17 +270,22 @@ main () {
   else
     print "Backup OFF script will not backup $directory_name/ files" yellow
   fi
-  checkupdate
 
-  mkdir -v "$temp_directory"
-  get_key
-  get_hash
-  get_binary
-  if [ "$check_0" = "1" ] && [ "$check_1" = "1" ] && [ "$check_2" = "1" ]; then
-    print "All requiremnts met starting updater function" green
-    updater
+  read -r -p "Would you like to install? [Y/n]: " output
+  if [ "$output" = 'N' ] || [ "$output" = 'n' ]; then
+    exit 1
   else
-    print "Failed to meet all requiremnts the script wont update" red
+    print "Starting install" yellow
+    mkdir -v "$temp_directory"
+    get_key
+    get_hash
+    get_binary
+    if [ "$check_0" = "1" ] && [ "$check_1" = "1" ] && [ "$check_2" = "1" ]; then
+      print "All requiremnts met starting updater function" green
+      updater
+    else
+      fail
+    fi
   fi
 }
 
