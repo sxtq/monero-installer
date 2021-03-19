@@ -207,11 +207,19 @@ checkversion () {
     binary_name=linuxarm7
     url="$url/cli/linuxarm7"
     version_name="monero-linux-armv7"
+    if [ "$type" = "2" ]; then
+      print "GUI Version is not supported on $binary_name" red
+      exit 1
+    fi
   elif [ "$version" = 'armv8l' ] || [ "$version" = '3' ]; then
     type_set="CLI"
     binary_name=linuxarm8
     url="$url/cli/linuxarm8"
     version_name="monero-linux-armv8"
+    if [ "$type" = "2" ]; then
+      print "GUI Version is not supported on $binary_name" red
+      exit 1
+    fi
   elif [ -z "$binary_name" ]; then
     print "Failed to detect version manual selection required" red
     print "1 = x64, 2 = armv7, 3 = armv8, Enter nothing to exit" yellow
@@ -223,7 +231,6 @@ checkversion () {
     fi
     checkversion
   fi
-  print "Monerod version set to $binary_name type: $type_set" green
 }
 
 fail () {
@@ -253,14 +260,15 @@ main () {
 
   checkversion
   if wget -q --spider http://github.com && [ "$offline" = "0" ]; then
-    print "Online install, the script will download the needed files for you" green
+    network_stat="Online install"
     net=1
   else
     temp_directory=$(pwd)
-    print "Offline Mode looking for files in $temp_directory" red
+    network_stat="Offline install"
     if [ -f "$temp_directory/$key_name" ] && [ -f "$temp_directory/$hash_file" ] && [ -f "$temp_directory/$binary_name" ]; then
-      print "All files found" green
+      print "All install files found in: $temp_directory/" green
     else
+      print "Offline install" red
       print "Failed to find install files" red
       print "$temp_directory/$key_name" red
       print "$temp_directory/$hash_file" red
@@ -268,13 +276,17 @@ main () {
       exit 1
     fi
   fi
-  print "Current fingerprint: $output_fingerprint" yellow
-  print "Current install directory: $working_directory" yellow
-  print "Current temp directory: $temp_directory" yellow
+  print "Verify everything is correct before installing" green
+  print "Manually checking the script is required to verify nothing was modified" red
+  print "      Fingerprint : $output_fingerprint" yellow
+  print "   Network status : $network_stat" yellow
+  print "   Monero version : $binary_name / $type_set" yellow
+  print "Install directory : $working_directory" yellow
+  print "   Temp directory : $temp_directory" yellow
   if [ "$backup" = "1" ]; then
-    print "Backup ON script will copy $directory_name/ files to $directory_name.bk/" yellow
+    print " Backup directory : ON $working_directory.bk" yellow
   else
-    print "Backup OFF script will not backup $directory_name/ files" yellow
+    print " Backup directory : OFF script wont touch wallet files" yellow
   fi
 
   read -r -p "Would you like to install? [Y/n]: " output
