@@ -233,6 +233,7 @@ checkversion () {
   fi
 }
 
+#This will run if the script failes to verify any parts of the install, just prints info and ask if you want to remove files
 fail () {
   print "Failed to meet all requiremnts the script wont update" red
   print "Path to files : $temp_directory" yellow
