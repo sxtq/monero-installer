@@ -8,6 +8,7 @@ working_directory="$directory/$directory_name" #To set manually use this example
 temp_directory="/tmp/xmr-75RvX3g3P" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
 offline=0 #Change this to 1 to run in offline mode
 backup=1 #Change this to 0 to not backup any files (If 0 script wont touch wallet files AT ALL)
+type=1 #1 for CLI 2 for GUI
 
 #Match the fingerprint below with the one here
 #https://web.getmonero.org/resources/user-guides/verification-allos-advanced.html#22-verify-signing-key
@@ -17,12 +18,8 @@ key_name=binaryfate.asc #Key file name (Used to help the script locate the file)
 hash_url=https://www.getmonero.org/downloads/hashes.txt #Hash file download URL
 hash_file=hashes.txt #Hash file name (Used to help the script locate the file)
 
-#x86_64 CLI URL
-url_linux64=https://downloads.getmonero.org/cli/linux64
-#arm7 CLI URL
-url_linuxarm7=https://downloads.getmonero.org/cli/linuxarm7
-#arm8 CLI URL
-url_linuxarm8=https://downloads.getmonero.org/cli/linuxarm8
+#Download server URL
+url=https://downloads.getmonero.org
 
 while test "$#" -gt 0; do
   case "$1" in
@@ -33,6 +30,7 @@ while test "$#" -gt 0; do
       echo "  -n, --name dirName                      manually set the name for the directory used to store the monero files"
       echo "  -v, --version number                    manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8"
       echo "  -o, --offline                           run in offline mode, this requires the files to be next to this script"
+      echo "  -t, --type number                       1 for CLI 2 for GUI"
       exit 0
       ;;
     -f|--fingerprint)
@@ -76,6 +74,16 @@ while test "$#" -gt 0; do
         export version="$1"
       else
         echo "No directory specified"
+        exit 1
+      fi
+      shift
+      ;;
+    -t|--type)
+      shift
+      if test "$#" -gt 0; then
+        export type="$1"
+      else
+        echo "No type specified"
         exit 1
       fi
       shift
@@ -185,15 +193,24 @@ updater () {
 checkversion () {
   if [ "$version" = 'x86_64' ] || [ "$version" = '1' ]; then
     binary_name=linux64
-    url="$url_linux64"
-    version_name="monero-linux-x64"
+    if [ "$type" = "1" ]; then
+      type_set="CLI"
+      url="$url/cli/linux64"
+      version_name="monero-linux-x64"
+    else
+      type_set="GUI"
+      url="$url/gui/linux64"
+      version_name="monero-gui-linux-x64"
+    fi
   elif [ "$version" = 'armv7l' ] || [ "$version" = '2' ]; then
+    type_set="CLI"
     binary_name=linuxarm7
-    url="$url_linuxarm7"
+    url="$url/cli/linuxarm7"
     version_name="monero-linux-armv7"
   elif [ "$version" = 'armv8l' ] || [ "$version" = '3' ]; then
+    type_set="CLI"
     binary_name=linuxarm8
-    url="$url_linuxarm8"
+    url="$url/cli/linuxarm8"
     version_name="monero-linux-armv8"
   elif [ -z "$binary_name" ]; then
     print "Failed to detect version manual selection required" red
@@ -206,7 +223,7 @@ checkversion () {
     fi
     checkversion
   fi
-  print "Monerod version set to $binary_name" green
+  print "Monerod version set to $binary_name type: $type_set" green
 }
 
 fail () {
