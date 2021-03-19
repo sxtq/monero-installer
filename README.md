@@ -30,6 +30,8 @@ When first downloading this script it is recommended you verify the variables ha
  -f, --fingerprint fingerprint           manually set fingerprint use quotes around fingerprint if the fingerprint has spaces
  -n, --name dirName                      manually set the name for the directory used to store the monero files
  -v, --version number                    manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8
+ -o, --offline                           run in offline mode, this requires the files to be next to this script
+ -t, --type number                       1 for CLI 2 for GUI
 ```
 ## Examples
 ```
