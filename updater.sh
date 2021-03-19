@@ -112,7 +112,7 @@ get_key () {
     wget -O "$temp_directory/$key_name" "$key_url"
   fi
   if gpg --with-colons --import-options import-show --dry-run --import < "$temp_directory/$key_name" | grep -q "$fingerprint"; then
-    print "Good signing key importing signing key" green
+    print "Good signing key importing key $temp_directory/$key_name" green
     gpg -v --import "$temp_directory/$key_name"
     check_0=1
   else
@@ -129,10 +129,10 @@ get_hash () {
     wget -O "$temp_directory/$hash_file" "$hash_url"
   fi
   if gpg -v --verify "$temp_directory/$hash_file"; then
-    print "Good hash file" green
+    print "Good hash file $temp_directory/$hash_file" green
     check_1=1
   else
-    print "Failed to verify hash file" red
+    print "Failed to verify hash file $temp_directory/$hash_file" red
     fail
   fi
 }
@@ -152,7 +152,7 @@ get_binary () {
   print "File hash:     $file_hash" yellow
   print "Binary hash:   $binary_hash" yellow
   if [ "$file_hash" = "$binary_hash" ]; then #Match the hashfile and binary
-    print "Good match" green
+    print "Binary hash matches hash file" green
     check_2=1
   else
     print "Bad match binary does not match hash file" red
