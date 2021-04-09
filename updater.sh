@@ -295,7 +295,6 @@ main () {
     exit 1
   else
     mkdir -v "$temp_directory"
-    mkdir -v .gnupg
     get_key
     get_hash
     get_binary
