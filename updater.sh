@@ -114,6 +114,7 @@ print () {
 
 #Download and verifys the key we will use to verify the binary
 get_key () {
+  gpg -k
   print "Downloading and verifying signing key" yellow
   if [ "$net" = "1" ]; then
     rm -v "$temp_directory/$key_name"
@@ -155,7 +156,8 @@ get_binary () {
   print "Checking the sum from the hash file and the binary" yellow
   line=$(grep -n "$version_name" "$temp_directory/$hash_file" | cut -d : -f 1) #Gets the version line(hash) from hash file
   file_hash=$(sed -n "$line"p "$temp_directory/$hash_file" | cut -f 1 -d ' ')
-  binary_hash=$(shasum -a 256 "$temp_directory/$binary_name" | cut -f 1 -d ' ')
+  pre_binary_hash=$(shasum -a 256 "$temp_directory/$binary_name" || sha256sum "$temp_directory/$binary_name" | cut -f 1 -d ' ')
+  binary_hash=$(echo "$pre_binary_hash" | cut -f 1 -d ' ')
 
   print "File hash:     $file_hash" yellow
   print "Binary hash:   $binary_hash" yellow
