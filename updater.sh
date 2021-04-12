@@ -303,6 +303,7 @@ main () {
     if [ "$check_0" = "1" ] && [ "$check_1" = "1" ] && [ "$check_2" = "1" ]; then
       print "All requiremnts met starting updater function" green
       updater
+      print "Done, make sure you DONT use the .bk directory as thats the backup and will be replaced every new install" yellow
     else
       fail
     fi
