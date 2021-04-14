@@ -107,7 +107,7 @@ done
 
 #Checks if wget is installed
 if command -v wget >/dev/null 2>&1 ; then
-  echo "wget found"
+  dwget=1
 else
   echo "wget not found"
   exit 1
