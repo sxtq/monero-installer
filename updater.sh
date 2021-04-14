@@ -113,8 +113,6 @@ else
   exit 1
 fi
 
-
-
 #Used for printing text on the screen
 print () {
   no_color='\033[0m'
