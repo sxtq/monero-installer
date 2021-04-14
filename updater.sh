@@ -24,13 +24,14 @@ url=https://downloads.getmonero.org
 while test "$#" -gt 0; do
   case "$1" in
     -h|--help)
-      echo "  -h, --help                              show list of startup flags"
-      echo "  -d, --directory /path/to/dir            manually set directory path (This will add /$directory_name to the end)"
-      echo "  -f, --fingerprint fingerprint           manually set fingerprint use quotes around fingerprint if the fingerprint has spaces"
-      echo "  -n, --name dirName                      manually set the name for the directory used to store the monero files"
-      echo "  -v, --version number                    manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8"
-      echo "  -o, --offline                           run in offline mode, this requires the files to be next to this script"
-      echo "  -t, --type number                       1 for CLI 2 for GUI"
+      echo "  -h,  --help                              show list of startup flags"
+      echo "  -d,  --directory /path/to/dir            manually set directory path (This will add /$directory_name to the end)"
+      echo "  -f,  --fingerprint fingerprint           manually set fingerprint use quotes around fingerprint if the fingerprint has spaces"
+      echo "  -n,  --name dirName                      manually set the name for the directory used to store the monero files"
+      echo "  -v,  --version number                    manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8"
+      echo "  -o,  --offline                           run in offline mode, this requires the files to be next to this script"
+      echo "  -t,  --type number                       1 for CLI 2 for GUI"
+      echo "  -s, --skip                               run with no input needed useful for auto updaters in scripts"
       exit 0
       ;;
     -f|--fingerprint)
@@ -86,6 +87,11 @@ while test "$#" -gt 0; do
         echo "No type specified"
         exit 1
       fi
+      shift
+      ;;
+    -s|--skip)
+      shift
+      export no_input=1
       shift
       ;;
     -o|--offline)
@@ -292,7 +298,11 @@ main () {
     print " Backup directory : OFF script wont touch wallet files" yellow
   fi
 
-  read -r -p "Would you like to install? [Y/n]: " output
+  if [ "$no_input" = "1" ]; then
+    output=Y
+  else
+    read -r -p "Would you like to install? [Y/n]: " output
+  fi
   if [ "$output" = 'N' ] || [ "$output" = 'n' ]; then
     exit 1
   else
