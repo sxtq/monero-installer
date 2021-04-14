@@ -31,7 +31,7 @@ while test "$#" -gt 0; do
       echo "  -v,  --version number                    manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8"
       echo "  -o,  --offline                           run in offline mode, this requires the files to be next to this script"
       echo "  -t,  --type number                       1 for CLI 2 for GUI"
-      echo "  -s, --skip                               run with no input needed useful for auto updaters in scripts"
+      echo "  -s,  --skip                               run with no input needed useful for auto updaters in scripts"
       exit 0
       ;;
     -f|--fingerprint)
