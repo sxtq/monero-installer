@@ -205,7 +205,7 @@ updater () {
   fi
 }
 
-#This is checks what version the verifier needs to download and  what line is needed in the hash file
+#This is what checks what version the verifier needs to download and what line is needed in the hash file
 checkversion () {
   if [ "$version" = 'x86_64' ] || [ "$version" = '1' ]; then
     binary_name=linux64
