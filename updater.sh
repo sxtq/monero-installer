@@ -271,7 +271,7 @@ fail () {
   print "     Binary verifcation : $check_2" yellow
   read -r -p "Would you like to remove the files? [N/y]: " output
   if [ "$output" = 'Y' ] || [ "$output" = 'y' ]; then
-    rm -v "$temp_directory/$key_name" "$temp_directory/$hash_file" "$temp_directory/$binary_name"
+    rm -drv "$temp_directory"
   fi
   exit 1
 }
@@ -338,6 +338,7 @@ main () {
     else
       fail
     fi
+    rm -drv "$temp_directory"
   fi
 }
 
