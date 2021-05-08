@@ -109,7 +109,15 @@ done
 if command -v wget >/dev/null 2>&1 ; then
   dwget=1
 else
-  echo "wget not found"
+  echo "wget not installed"
+  exit 1
+fi
+
+#Checks if gnupg is installed
+if command -v gpg >/dev/null 2>&1 ; then
+  dwget=1
+else
+  echo "gnupg not installed"
   exit 1
 fi
 
