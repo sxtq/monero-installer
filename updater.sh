@@ -5,7 +5,7 @@ directory_name="xmr" #Name of directory that contains monero software files (mak
 version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$directory_name'//g')
 working_directory="$directory/$directory_name" #To set manually use this example working_directory=/home/myUser/xmr
-temp_directory="/tmp/xmr-75RvX3g3P" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
+temp_directory="$directory/working" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
 offline=0 #Change this to 1 to run in offline mode
 backup=1 #Change this to 0 to not backup any files (If 0 script wont touch wallet files AT ALL)
 type=1 #1 for CLI 2 for GUI
