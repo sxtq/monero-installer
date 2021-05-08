@@ -236,6 +236,11 @@ checkversion () {
       print "GUI Version is not supported on $binary_name" red
       exit 1
     fi
+  elif [ "$version" = 'aarch64' ] || [ "$version" = '4' ]; then
+    type_set="CLI"
+    binary_name=androidarm8
+    url="$url/cli/androidarm8"
+    version_name="monero-linux-androidarm8"
   elif [ -z "$binary_name" ]; then
     print "Failed to detect version manual selection required" red
     print "1 = x64, 2 = armv7, 3 = armv8, Enter nothing to exit" yellow
