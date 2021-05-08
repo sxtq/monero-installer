@@ -2,10 +2,10 @@
 
 #Version 1.3.5
 directory_name="xmr" #Name of directory that contains monero software files (make it whatever you want)
-version=$(uname -m) #version=1 for 64-bit, 2 for arm7 and 3 for arm8 or version=$(uname -m) for auto detect
+version=$(uname -m) #version=1 for 64-bit, 2 for arm7, 3 for arm8 and 4 for android arm8 or version=$(uname -m) for auto detect
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$directory_name'//g')
 working_directory="$directory/$directory_name" #To set manually use this example working_directory=/home/myUser/xmr
-temp_directory="$directory/working" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
+temp_directory="$directory/tmp-xmr-483" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
 offline=0 #Change this to 1 to run in offline mode
 backup=1 #Change this to 0 to not backup any files (If 0 script wont touch wallet files AT ALL)
 type=1 #1 for CLI 2 for GUI
@@ -28,7 +28,7 @@ while test "$#" -gt 0; do
       echo "  -d,  --directory /path/to/dir        manually set directory path (This will add /$directory_name to the end)"
       echo "  -f,  --fingerprint fingerprint       manually set fingerprint use quotes around fingerprint if the fingerprint has spaces"
       echo "  -n,  --name dirName                  manually set the name for the directory used to store the monero files"
-      echo "  -v,  --version number                manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8"
+      echo "  -v,  --version number                manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8, 4 for android arm8"
       echo "  -o,  --offline                       run in offline mode, this requires the files to be next to this script"
       echo "  -t,  --type number                   1 for CLI 2 for GUI"
       echo "  -s,  --skip                          run with no input needed useful for auto updaters in scripts"
@@ -243,8 +243,8 @@ checkversion () {
     version_name="monero-android-armv8"
   elif [ -z "$binary_name" ]; then
     print "Failed to detect version manual selection required" red
-    print "1 = x64, 2 = armv7, 3 = armv8, Enter nothing to exit" yellow
-    read -r -p "Select a version [1/2/3]: " version
+    print "1 = x64, 2 = armv7, 3 = armv8, 4 = android-arm8 Enter nothing to exit" yellow
+    read -r -p "Select a version [1/2/3/4]: " version
     if [ -z "$version" ]; then
       print "No version selected exiting" red
       rm -v "$temp_directory/$key_name" "$temp_directory/$hash_file"
