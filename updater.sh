@@ -262,9 +262,14 @@ checkversion () {
     fi
   elif [ -z "$binary_name" ]; then
     print "Failed to detect version manual selection required" red
-    print "1 = linux64, 2 = armv7, 3 = armv8, 4 = android-arm8, 5 = linux32" yellow
-    print "Enter nothing to exit" yellow
-    read -r -p "Select a version [1/2/3/4/5]: " version
+    if [ "$no_input" = "1" ]; then
+      print "Script ran in no input mode nothing can be done exiting" red
+      exit 1
+    else
+      print "1 = linux64, 2 = armv7, 3 = armv8, 4 = android-arm8, 5 = linux32" yellow
+      print "Enter nothing to exit" yellow
+      read -r -p "Select a version [1/2/3/4/5]: " version
+    fi
     if [ -z "$version" ]; then
       print "No version selected exiting" red
       rm -v "$temp_directory/$key_name" "$temp_directory/$hash_file"
@@ -277,11 +282,16 @@ checkversion () {
 #This will run if the script failes to verify any parts of the install, just prints info and ask if you want to remove files
 fail () {
   print "Failed to meet all requiremnts the script wont update" red
-  print "Path to files : $temp_directory" yellow
-  print "Signing key verifcation : $check_0" yellow
-  print "   Hashfile verifcation : $check_1" yellow
-  print "     Binary verifcation : $check_2" yellow
-  read -r -p "Would you like to remove the files? [N/y]: " output
+  if [ "$no_input" = "1" ]; then
+    print "Script ran in no input mode removing files by default" red
+    output=Y
+  else
+    print "Path to files : $temp_directory" yellow
+    print "Signing key verifcation : $check_0" yellow
+    print "   Hashfile verifcation : $check_1" yellow
+    print "     Binary verifcation : $check_2" yellow
+    read -r -p "Would you like to remove the files? [N/y]: " output
+  fi
   if [ "$output" = 'Y' ] || [ "$output" = 'y' ]; then
     rm -drv "$temp_directory"
   fi
@@ -332,6 +342,7 @@ main () {
   fi
 
   if [ "$no_input" = "1" ]; then
+    print "Script ran in no input mode starting updater" red
     output=Y
   else
     read -r -p "Would you like to install? [Y/n]: " output
