@@ -2,7 +2,7 @@
 
 #Version 1.3.5
 directory_name="xmr" #Name of directory that contains monero software files (make it whatever you want)
-version=$(uname -m) #version=1 for 64-bit, 2 for arm7, 3 for arm8 and 4 for android arm8 or version=$(uname -m) for auto detect
+version= #$(uname -m) #version=1 for 64-bit, 2 for arm7, 3 for arm8 and 4, for android arm8, 5 for linux32 or version=$(uname -m) for auto detect
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$directory_name'//g')
 working_directory="$directory/$directory_name" #To set manually use this example working_directory=/home/myUser/xmr
 temp_directory="$directory/tmp-xmr-483" #This is where the hashes.txt, binary file and sigining key will be stored while the script is running.
@@ -28,7 +28,7 @@ while test "$#" -gt 0; do
       echo "  -d,  --directory /path/to/dir        manually set directory path (This will add /$directory_name to the end)"
       echo "  -f,  --fingerprint fingerprint       manually set fingerprint use quotes around fingerprint if the fingerprint has spaces"
       echo "  -n,  --name dirName                  manually set the name for the directory used to store the monero files"
-      echo "  -v,  --version number                manually set the version 1 for 64-bit, 2 for arm7, 3 for arm8, 4 for android arm8"
+      echo "  -v,  --version number                manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8, 4 for android arm8, 5 for linux32"
       echo "  -o,  --offline                       run in offline mode, this requires the files to be next to this script"
       echo "  -t,  --type number                   1 for CLI 2 for GUI"
       echo "  -s,  --skip                          run with no input needed useful for auto updaters in scripts"
@@ -245,10 +245,24 @@ checkversion () {
     binary_name=androidarm8
     url="$url/cli/androidarm8"
     version_name="monero-android-armv8"
+    if [ "$type" = "2" ]; then
+      print "GUI Version is not supported on $binary_name" red
+      exit 1
+    fi
+  elif [ "$version" = 'i686' ] || [ "$version" = '5' ]; then
+    type_set="CLI"
+    binary_name=linux32
+    url="$url/cli/linux32"
+    version_name="monero-linux-x86"
+    if [ "$type" = "2" ]; then
+      print "GUI Version is not supported on $binary_name" red
+      exit 1
+    fi
   elif [ -z "$binary_name" ]; then
     print "Failed to detect version manual selection required" red
-    print "1 = x64, 2 = armv7, 3 = armv8, 4 = android-arm8 Enter nothing to exit" yellow
-    read -r -p "Select a version [1/2/3/4]: " version
+    print "1 = linux64, 2 = armv7, 3 = armv8, 4 = android-arm8, 5 = linux32" yellow
+    print "Enter nothing to exit" yellow
+    read -r -p "Select a version [1/2/3/4/5]: " version
     if [ -z "$version" ]; then
       print "No version selected exiting" red
       rm -v "$temp_directory/$key_name" "$temp_directory/$hash_file"
