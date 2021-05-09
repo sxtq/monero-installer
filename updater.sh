@@ -101,7 +101,8 @@ while test "$#" -gt 0; do
       shift
       ;;
     *)
-      break
+      echo "Unrecognized flag \"$1\""
+      exit 1
       ;;
   esac
 done
