@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#Version 1.3.5
+#Version 1.3.6
 directory_name="xmr" #Name of directory that contains monero software files (make it whatever you want)
 version=$(uname -m) #version=1 for 64-bit, 2 for arm7, 3 for arm8 and 4, for android arm8, 5 for linux32 or version=$(uname -m) for auto detect
 directory=$(printf "%q\n" "$(pwd)" | sed 's/\/'$directory_name'//g')
