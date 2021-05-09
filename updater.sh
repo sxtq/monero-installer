@@ -28,7 +28,7 @@ while test "$#" -gt 0; do
       echo "  -d,  --directory /path/to/dir        manually set directory path (This will add /$directory_name to the end)"
       echo "  -f,  --fingerprint fingerprint       manually set fingerprint use quotes around fingerprint if the fingerprint has spaces"
       echo "  -n,  --name dirName                  manually set the name for the directory used to store the monero files"
-      echo "  -v,  --version number                manually set the version 1 for 64-bit, 2 for arm7 and 3 for arm8, 4 for android arm8, 5 for linux32"
+      echo "  -v,  --version number                manually set the version 1 for 64-bit, 2 for arm7, 3 for arm8, 4 for android arm8, 5 for linux32"
       echo "  -o,  --offline                       run in offline mode, this requires the files to be next to this script"
       echo "  -t,  --type number                   1 for CLI 2 for GUI"
       echo "  -s,  --skip                          run with no input needed useful for auto updaters in scripts"
@@ -74,7 +74,8 @@ while test "$#" -gt 0; do
       if test "$#" -gt 0; then
         export version="$1"
       else
-        echo "No directory specified"
+        echo "No version specified"
+        echo "1 for 64-bit, 2 for arm7, 3 for arm8, 4 for android arm8, 5 for linux32"
         exit 1
       fi
       shift
