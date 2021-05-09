@@ -106,19 +106,15 @@ while test "$#" -gt 0; do
 done
 
 #Checks if wget is installed
-if command -v wget >/dev/null 2>&1 ; then
-  dwget=1
-else
+if ! command -v wget &> /dev/null; then
   echo "wget not installed"
-  exit 1
+  exit
 fi
 
 #Checks if gnupg is installed
-if command -v gpg >/dev/null 2>&1 ; then
-  dwget=1
-else
+if ! command -v gpg &> /dev/null; then
   echo "gnupg not installed"
-  exit 1
+  exit
 fi
 
 #Used for printing text on the screen
